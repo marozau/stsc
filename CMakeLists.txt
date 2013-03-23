@@ -4,7 +4,7 @@ set( CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "Configurations"
 project( ${SOLUTION_NAME} )
 include( environment.cmake required )
 
-modules( common engine datafeed )
+modules( common engine datafeed genetic_optimizer )
 
 binaries( yahoo_finance_to_binary_data )
 
