@@ -27,7 +27,7 @@ namespace stsc
 
 		public:
 			void add_allele( allele * const a );
-			const gene * const create_gene() const;
+			gene * const create_gene() const;
 		};
 		class gene : protected virtual boost::noncopyable
 		{
@@ -35,7 +35,6 @@ namespace stsc
 			friend class genotype;
 			typedef genotype::allele_ptr allele_ptr;
 			typedef genotype::allele_storage allele_storage;
-			static const double mutation_percent;
 
 		private:
 			allele_storage alleles_;
@@ -45,7 +44,7 @@ namespace stsc
 			explicit gene( const genotype& gt );
 
 		public:
-			gene * const reproduction( const gene& g );
+			gene * const reproduction( const gene& g ) const;
 			void mutation();
 			const allele& at( const size_t i );
 		};

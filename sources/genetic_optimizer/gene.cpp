@@ -22,12 +22,11 @@ namespace stsc
 		{
 			alleles_.push_back( allele_ptr( a ) );
 		}
-		const gene * const genotype::create_gene() const
+		gene * const genotype::create_gene() const
 		{
 			return new gene( *this );
 		}
 		//
-		const double gene::mutation_percent = 4.0;
 		gene::gene( const genotype& gt )
 		{
 			std::copy( gt.alleles_.begin(), gt.alleles_.end(), alleles_.begin() );
@@ -36,7 +35,7 @@ namespace stsc
 		{
 			std::copy( g.alleles_.begin(), g.alleles_.end(), alleles_.begin() );
 		}
-		gene* const gene::reproduction( const gene& g )
+		gene* const gene::reproduction( const gene& g ) const
 		{
 			const size_t i = details::rand( alleles_.size() );
 			gene* const nested_gene = new gene( *this );
