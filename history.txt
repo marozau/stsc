@@ -5,6 +5,10 @@
 [-] : delete bug
 [+] : new feature
 
+ [00.00.00.07], (25-Mar-2013), Ihar Marozau
+---------------------------------------------------------------------------
+[+] start adding code for genetic_optimizer: create first version of genotype and gene classes
+
  [00.00.00.07], (24-Mar-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [-] add startegy_engine declaration to algorithm_prototype
