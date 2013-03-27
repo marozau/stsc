@@ -5,6 +5,11 @@
 [-] : delete bug
 [+] : new feature
 
+ [00.00.00.07], (27-Mar-2013), Ihar Marozau
+---------------------------------------------------------------------------
+[+] add gray_code and gray_code generator with tests
+[+] add allele with tests
+
  [00.00.00.07], (25-Mar-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [+] start adding code for genetic_optimizer: create first version of genotype and gene classes

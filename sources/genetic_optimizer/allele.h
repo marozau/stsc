@@ -5,56 +5,49 @@
 #include <vector>
 #include <bitset>
 
+#include <gray_code.h>
+
 namespace stsc
 {
+	namespace tests_
+	{
+		namespace genetic_optimizer
+		{
+			class allele_tests;
+		}
+	}
 	namespace genetic_optimizer
 	{
-		namespace details
-		{
-			class gray_code
-			{
-				static const size_t bitset_size = 32;
-				std::bitset< bitset_size > code_;
-				size_t max_bit_;
-
-			public:
-				explicit gray_code( const size_t bin );
-				//
-				size_t decode() const;
-				size_t invesrse_bit( const size_t pos );
-			};
-			unsigned int grayencode( unsigned int g ) 
-			{
-				return g ^ (g >> 1);
-			}
-			unsigned int graydecode( unsigned int gray ) 
-			{
-				unsigned int bin;
-				for (bin = 0; gray; gray >>= 1) {
-					bin ^= gray;
-				}
-				return bin;
-			}
-			unsigned int invesrse_bit( const size_t pos ) 
-			{
-
-			}
-		}
 		class allele : protected virtual boost::noncopyable
 		{
-			typedef float value_type;
+			friend class stsc::tests_::genetic_optimizer::allele_tests;
 
+		public:
+			typedef double value_type;
+
+		private:
 			const value_type min_;
 			const value_type max_;
 			const value_type step_;
-			std::vector< bool > value_;
+			value_type value_;
 
+			details::gray_code_generator gcg_;
+			
 		public:
 			explicit allele( const value_type min, const value_type max, const value_type step );
-			~allele();
+			allele( const allele& a );
 			//
+			const value_type value() const;
 			void mutation();
+			void reset();
+
+		private:
+			void calculate_value_();
 		};
+		namespace details
+		{
+			const size_t calculate_periods_count( const allele::value_type min, const allele::value_type max, const allele::value_type step );
+		}
 	}
 }
 

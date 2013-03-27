@@ -9,10 +9,6 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		namespace details
-		{
-			const size_t rand( const size_t max );
-		}
 		class gene;
 		class allele;
 		class genotype : protected virtual boost::noncopyable
@@ -46,8 +42,13 @@ namespace stsc
 		public:
 			gene * const reproduction( const gene& g ) const;
 			void mutation();
+			void reset();
 			const allele& at( const size_t i );
 		};
+		namespace details
+		{
+			const gene::allele_ptr get_clone( const gene::allele_ptr a );
+		}
 	}
 }
 

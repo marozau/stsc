@@ -10,6 +10,18 @@ test_suite* init_unit_test_suite( int argc, char* argv[] )
 	test_suite* ts1 = BOOST_TEST_SUITE( "genetic_optimizer tests" );
 	boost::unit_test::unit_test_log.set_threshold_level( boost::unit_test::log_messages );
 
+	using namespace stsc::tests_::genetic_optimizer::details;
+	ts1->add( BOOST_TEST_CASE( &gray_code_constructor_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gray_code_flip_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gray_code_generator_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gray_code_generator_flip_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gray_code_generator_reset_tests ) );
+	ts1->add( BOOST_TEST_CASE( &rand_tests ) );
+	//
+	using namespace stsc::tests_::genetic_optimizer;
+	ts1->add( BOOST_TEST_CASE( &allele_constructor_tests ) );
+	ts1->add( BOOST_TEST_CASE( &allele_mutation_tests ) );
+	ts1->add( BOOST_TEST_CASE( &allele_reset_tests ) );
 
 	return ts1;
 }
