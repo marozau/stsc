@@ -5,6 +5,10 @@
 [-] : delete bug
 [+] : new feature
 
+ [00.00.00.07], (28-Mar-2013), Ihar Marozau
+---------------------------------------------------------------------------
+[+] add tests for gene,  small refactoring
+
  [00.00.00.07], (27-Mar-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [+] add gray_code and gray_code generator with tests

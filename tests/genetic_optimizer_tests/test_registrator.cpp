@@ -13,7 +13,7 @@ test_suite* init_unit_test_suite( int argc, char* argv[] )
 	using namespace stsc::tests_::genetic_optimizer::details;
 	ts1->add( BOOST_TEST_CASE( &gray_code_constructor_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gray_code_flip_tests ) );
-	ts1->add( BOOST_TEST_CASE( &gray_code_generator_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gray_code_generator_constructor_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gray_code_generator_flip_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gray_code_generator_reset_tests ) );
 	ts1->add( BOOST_TEST_CASE( &rand_tests ) );
@@ -22,6 +22,14 @@ test_suite* init_unit_test_suite( int argc, char* argv[] )
 	ts1->add( BOOST_TEST_CASE( &allele_constructor_tests ) );
 	ts1->add( BOOST_TEST_CASE( &allele_mutation_tests ) );
 	ts1->add( BOOST_TEST_CASE( &allele_reset_tests ) );
+	//
+	ts1->add( BOOST_TEST_CASE( &genome_add_allele_tests ) );
+	ts1->add( BOOST_TEST_CASE( &genome_create_gene_tests ) );
+	//
+	ts1->add( BOOST_TEST_CASE( &gene_constructor_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gene_reproduction_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gene_mutation_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gene_reset_tests ) );
 
 	return ts1;
 }

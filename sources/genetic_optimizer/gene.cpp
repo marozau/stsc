@@ -1,45 +1,49 @@
 #include "gene.h"
 
-#include <algorithm>
-#include <ctime>
-
-#include "allele.h"
-
 namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		void genotype::add_allele( allele * const a )
+		namespace details
 		{
-			alleles_.push_back( allele_ptr( a ) );
-		}
-		gene * const genotype::create_gene() const
-		{
-			return new gene( *this );
+			void base_crossover::operator()( const genome::allele_storage& father_alleles, const genome::allele_storage& mother_alleles, genome::allele_storage& child_alleles )
+			{
+				gene::allele_storage temp_alleles;
+				const size_t i = details::rand( father_alleles.size() );
+				for ( gene::allele_storage::const_iterator it = father_alleles.begin(); it != father_alleles.begin() + i; ++it )
+					temp_alleles.push_back( gene::allele_ptr( new allele( *(*it) ) ) );
+				for ( gene::allele_storage::const_iterator it = mother_alleles.begin() + i; it != mother_alleles.end(); ++it )
+					temp_alleles.push_back( gene::allele_ptr( new allele( *(*it) ) ) );
+				child_alleles.swap( temp_alleles );
+			}
 		}
 		//
-		gene::gene( const genotype& gt )
+		gene::gene( const genome& gt )
 		{
 			alleles_.reserve( gt.alleles_.size() );
-			std::transform( gt.alleles_.begin(), gt.alleles_.end(), alleles_.begin(), details::get_clone );
+			for ( genome::allele_storage::const_iterator it = gt.alleles_.begin();  it != gt.alleles_.end(); ++it )
+				alleles_.push_back( gene::allele_ptr( new allele( *( *it ) ) ) );
 		}
-		gene::gene( const gene& g )
+		gene::gene()
 		{
-			alleles_.reserve( g.alleles_.size() );
-			std::transform( g.alleles_.begin(), g.alleles_.end(), alleles_.begin(), details::get_clone );
 		}
-		gene* const gene::reproduction( const gene& g ) const
+		gene* const gene::reproduction( const gene& g, details::crossover_prototype& func ) const
 		{
-			const size_t i = details::rand( alleles_.size() );
-			gene* const nested_gene = new gene( *this );
-			///todo: cteare tempalte crossover function. input two alleles sequences, output - new one
-			std::copy( g.alleles_.begin(), g.alleles_.begin() + i,	nested_gene->alleles_.begin() );
-			return nested_gene;
+			if ( alleles_.size() != g.alleles_.size() )
+				throw std::logic_error( "gene reproduction error: genes size must be equal" );
+			std::auto_ptr< gene > child_gene( new gene() );
+			func( alleles_, g.alleles_, child_gene->alleles_ );
+			return child_gene.release();
 		}
-		void gene::mutation()
+		void gene::mutation( const size_t mutation_probability )
 		{
-			const size_t i = details::rand( alleles_.size() );
-			alleles_.at( i )->mutation();
+			static const size_t max_percent = 100;
+			const size_t p = details::rand( max_percent );
+			if ( p <= mutation_probability )
+			{
+				const size_t i = details::rand( alleles_.size() );
+				alleles_.at( i )->mutation();
+			}
 		}
 		void gene::reset()
 		{
@@ -49,13 +53,6 @@ namespace stsc
 		const allele& gene::at( const size_t i )
 		{
 			return *alleles_.at( i );
-		}
-		namespace details
-		{
-			const gene::allele_ptr get_clone( const gene::allele_ptr a )
-			{
-				return gene::allele_ptr( new allele( *a ) );
-			}
 		}
 	}
 }

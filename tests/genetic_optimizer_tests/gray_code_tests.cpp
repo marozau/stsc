@@ -52,7 +52,7 @@ namespace stsc
 						BOOST_CHECK_THROW( gc.flip( 5 ), std::invalid_argument );
 					}
 				}
-				void gray_code_generator_tests()
+				void gray_code_generator_constructor_tests()
 				{
 					{
 						gray_code_generator gcg( 31 );
@@ -71,9 +71,9 @@ namespace stsc
 						gray_code_generator gcg1( 100 );
 						gray_code_generator gcg2( gcg1 );
 						gray_code_generator gcg3( gcg1 );
-						BOOST_CHECK_EQUAL( gcg1.value() != gcg2.value(), true );
-						BOOST_CHECK_EQUAL( gcg1.value() != gcg3.value(), true );
-						BOOST_CHECK_EQUAL( gcg2.value() != gcg3.value(), true );
+						BOOST_CHECK_EQUAL( gcg1.value() == gcg2.value(), true );
+						BOOST_CHECK_EQUAL( gcg1.value() == gcg3.value(), true );
+						BOOST_CHECK_EQUAL( gcg2.value() == gcg3.value(), true );
 					}
 				}
 				void gray_code_generator_flip_tests()

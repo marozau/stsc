@@ -48,7 +48,7 @@ namespace stsc
 			}
 			gray_code_generator::gray_code_generator( const gray_code_generator& gcg )
 				: max_( gcg.max_ )
-				, gc_( rand( max_ ), max_ )
+				, gc_( gcg.value(), max_ )
 			{
 			}
 			const size_t gray_code_generator::value() const

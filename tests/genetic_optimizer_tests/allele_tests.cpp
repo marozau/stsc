@@ -29,16 +29,16 @@ namespace stsc
 						BOOST_CHECK_THROW( a.reset( new allele( 10.0, 9.0, 1.0 ) ), std::invalid_argument );
 						BOOST_CHECK_THROW( a.reset( new allele( 10.0, 9.0, -0.00001 ) ), std::invalid_argument );
 					}
-					{
+					{ ///copy constructor tests
 						allele_ptr a;
 						allele_ptr a_copy;
 						BOOST_CHECK_NO_THROW( a.reset( new allele( 10.0, 100.0, 1.0 ) ) );
 						BOOST_CHECK_NO_THROW( a_copy.reset( new allele( *a ) ) );
-						BOOST_CHECK_EQUAL( a_copy->min_, 10.0 );
-						BOOST_CHECK_EQUAL( a_copy->max_, 100.0 );
-						BOOST_CHECK_EQUAL( a_copy->step_, 1.0 );
+						BOOST_CHECK_EQUAL( a_copy->min_, a->min_ );
+						BOOST_CHECK_EQUAL( a_copy->max_, a->max_ );
+						BOOST_CHECK_EQUAL( a_copy->step_, a->step_ );
 						BOOST_CHECK_EQUAL( a_copy->value_, a_copy->value() );
-						BOOST_CHECK_EQUAL( a_copy->value_ != a->value(), true );
+						BOOST_CHECK_EQUAL( a_copy->value_ == a->value(), true );
 					}
 				}
 				static void mutation_tests()
