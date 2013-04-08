@@ -5,6 +5,11 @@
 [-] : delete bug
 [+] : new feature
 
+ [00.00.00.07], (8-Apr-2013), Ihar Marozau
+---------------------------------------------------------------------------
+[+] started to add new classes: population optimizer
+[*] fix gene::mutation and rewrite base_crosover
+
  [00.00.00.07], (28-Mar-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [+] add tests for gene,  small refactoring

@@ -57,17 +57,17 @@ namespace stsc
 						gene_ptr g;
 						BOOST_CHECK_NO_THROW( g.reset( new gene( gt_ ) ) );
 						gene_ptr g_copy( new gene( gt_ ) );
-						BOOST_CHECK_NO_THROW( g->mutation( 0 ) );
+						BOOST_CHECK_NO_THROW( g->mutation() );
 						size_t diffs_count = 0;
 						for ( size_t it = 0; it != g->alleles_.size(); ++it )
 							if ( g->alleles_.at( it )->value() != g_copy->alleles_.at( it )->value() )
 								++diffs_count;
-						BOOST_CHECK_EQUAL( diffs_count, 0 );
-						BOOST_CHECK_NO_THROW( g->mutation( 100 ) );
+						BOOST_CHECK_EQUAL( diffs_count, 1 );
+						BOOST_CHECK_NO_THROW( g->mutation() );
 						for ( size_t it = 0; it != g->alleles_.size(); ++it )
 							if ( g->alleles_.at( it )->value() != g_copy->alleles_.at( it )->value() )
 								++diffs_count;
-						BOOST_CHECK_EQUAL( diffs_count, 1 );
+						BOOST_CHECK_EQUAL( diffs_count, 3 );
 						
 					}
 				}

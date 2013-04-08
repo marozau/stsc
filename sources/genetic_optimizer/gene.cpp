@@ -8,13 +8,10 @@ namespace stsc
 		{
 			void base_crossover::operator()( const genome::allele_storage& father_alleles, const genome::allele_storage& mother_alleles, genome::allele_storage& child_alleles )
 			{
+				const size_t i = details::rand( father_alleles.size() - 2 ) + 1; /// -2 ) + 1 is used to make sure that child allele will have both parant alleles.
 				gene::allele_storage temp_alleles;
-				const size_t i = details::rand( father_alleles.size() );
-				for ( gene::allele_storage::const_iterator it = father_alleles.begin(); it != father_alleles.begin() + i; ++it )
-					temp_alleles.push_back( gene::allele_ptr( new allele( *(*it) ) ) );
-				for ( gene::allele_storage::const_iterator it = mother_alleles.begin() + i; it != mother_alleles.end(); ++it )
-					temp_alleles.push_back( gene::allele_ptr( new allele( *(*it) ) ) );
-				child_alleles.swap( temp_alleles );
+				child_alleles.insert( child_alleles.end(), father_alleles.begin(), father_alleles.begin() + i );
+				child_alleles.insert( child_alleles.end(), mother_alleles.begin() + i, mother_alleles.end() );
 			}
 		}
 		//
@@ -35,22 +32,21 @@ namespace stsc
 			func( alleles_, g.alleles_, child_gene->alleles_ );
 			return child_gene.release();
 		}
-		void gene::mutation( const size_t mutation_probability )
-		{
-			static const size_t max_percent = 100;
-			const size_t p = details::rand( max_percent );
-			if ( p <= mutation_probability )
-			{
-				const size_t i = details::rand( alleles_.size() );
-				alleles_.at( i )->mutation();
-			}
+		void gene::mutation()
+		{			
+			const size_t i = details::rand( alleles_.size() - 1 );
+			alleles_.at( i )->mutation();
 		}
 		void gene::reset()
 		{
 			for ( allele_storage::iterator it = alleles_.begin(); it != alleles_.end(); ++it )
 				( *it )->reset();
 		}
-		const allele& gene::at( const size_t i )
+		const size_t gene::size() const
+		{
+			return alleles_.size();
+		}
+		const allele& gene::at( const size_t i ) const
 		{
 			return *alleles_.at( i );
 		}

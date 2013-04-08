@@ -61,12 +61,15 @@ namespace stsc
 			}
 			void gray_code_generator::flip()
 			{
-				std::srand( (unsigned int)std::time( NULL ) );
-				do
+				for (;;)
 				{
-					const size_t i = std::rand() % ( gc_.size() + 1 );
+					const size_t i = details::rand( gc_.size() - 1 );
 					gc_.flip( i );
-				} while ( gc_.decode() > max_ );
+					if ( gc_.decode() > max_ )
+						gc_.flip( i );
+					else 
+						break;
+				} 
 			}
 			//
 			const size_t rand( const size_t max )

@@ -47,9 +47,11 @@ namespace stsc
 
 		public:
 			gene* const reproduction( const gene& g, details::crossover_prototype& func = details::base_crossover() ) const;
-			void mutation( const size_t mutation_probability );
+			void mutation();
 			void reset();
-			const allele& at( const size_t i );
+			//
+			const size_t size() const;
+			const allele& at( const size_t i ) const;
 		};
 	}
 }
