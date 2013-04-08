@@ -33,6 +33,10 @@ namespace stsc
 			const genotype& genes() const;
 			//
 			void life_cycle( const fitness& fitness );
+
+		private:
+			void reproduction_( const fitness& fitness, genotype& descendant );
+			void mutation_( genotype& descendant );
 		};
 	}
 }

@@ -26,21 +26,29 @@ namespace stsc
 		}
 		void population::life_cycle( const fitness& fitness )
 		{
+			genotype descendant;
+			descendant.reserve( size_ );
+			reproduction_( fitness, descendant );
+			mutation_( descendant );
+			genes_.swap( descendant );
+		}
+		void population::reproduction_( const fitness& fitness, genotype& descendant )
+		{
 			static const size_t max_percent = 100;
-			genotype descendant_population;
-			descendant_population.reserve( size_ );
-			while ( descendant_population.size() < size_ )
+			while ( descendant.size() < size_ )
 			{
 				const size_t father_gene = details::rand( size_ );
 				const size_t mother_gene = details::rand( size_ );
 				if ( fitness.at( father_gene ) >= details::rand( max_percent ) && fitness.at( mother_gene ) >= details::rand( max_percent ) )
 					genes_.push_back( gene_ptr( genes_.at( mother_gene )->reproduction( *genes_.at( father_gene ) ) ) );
 			}
-			for ( genotype::iterator it = genes_.begin(); it != genes_.end(); ++it )
+		}
+		void population::mutation_( genotype& descendant )
+		{
+			static const size_t max_percent = 100;
+			for ( genotype::iterator it = descendant.begin(); it != descendant.end(); ++it )
 				if ( mutation_percent_ >= details::rand( max_percent ) )
 					( *it )->mutation();
-
-			genes_.swap( descendant_population );
 		}
 	}
 }
