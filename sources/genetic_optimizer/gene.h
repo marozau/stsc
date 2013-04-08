@@ -26,9 +26,11 @@ namespace stsc
 			};
 		}
 		//
+		class population;
 		class gene
 		{
 			friend class stsc::tests_::genetic_optimizer::gene_tests;
+			friend class population;
 
 		public:
 			friend class genome;
@@ -41,17 +43,16 @@ namespace stsc
 		private:
 			explicit gene( const genome& gt );
 			explicit gene();
-			//
 			explicit gene( const gene& g ) {}
 			gene& operator =( const gene& g ) {}
-
-		public:
+			//
 			gene* const reproduction( const gene& g, details::crossover_prototype& func = details::base_crossover() ) const;
 			void mutation();
 			void reset();
 			//
+		public:
 			const size_t size() const;
-			const allele& at( const size_t i ) const;
+			const allele::value_type at( const size_t i ) const;
 		};
 	}
 }

@@ -16,7 +16,15 @@ namespace stsc
 		{
 		}
 		//
-		const bool population::life_cycle( const fitness& fitness )
+		const size_t population::size() const
+		{
+			return size_;
+		}
+		const population::genotype& population::genes() const
+		{
+			return genes_;
+		}
+		void population::life_cycle( const fitness& fitness )
 		{
 			static const size_t max_percent = 100;
 			genotype descendant_population;
@@ -32,7 +40,7 @@ namespace stsc
 				if ( mutation_percent_ >= details::rand( max_percent ) )
 					( *it )->mutation();
 
-			return true;
+			genes_.swap( descendant_population );
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace stsc
 			typedef std::vector< fitness_type > fitness;
 			typedef boost::shared_ptr< gene > gene_ptr;
 			typedef std::vector< gene_ptr > genotype;
-
+			
 		private:
 			const size_t size_;
 			genotype genes_;
@@ -29,7 +29,10 @@ namespace stsc
 			explicit population( const genome * const genome, const size_t size, const size_t mutation_percent );
 			~population();
 			//
-			const bool life_cycle( const fitness& fitness );
+			const size_t size() const;
+			const genotype& genes() const;
+			//
+			void life_cycle( const fitness& fitness );
 		};
 	}
 }

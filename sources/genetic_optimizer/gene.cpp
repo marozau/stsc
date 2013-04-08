@@ -33,7 +33,8 @@ namespace stsc
 			return child_gene.release();
 		}
 		void gene::mutation()
-		{			
+		{
+			/// todo: maybe it'll be useful to add const size_t alleles_mutant_count parameter to mutate several aleles
 			const size_t i = details::rand( alleles_.size() - 1 );
 			alleles_.at( i )->mutation();
 		}
@@ -46,9 +47,9 @@ namespace stsc
 		{
 			return alleles_.size();
 		}
-		const allele& gene::at( const size_t i ) const
+		const allele::value_type gene::at( const size_t i ) const
 		{
-			return *alleles_.at( i );
+			return alleles_.at( i )->value();
 		}
 	}
 }
