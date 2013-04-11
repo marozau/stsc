@@ -17,6 +17,7 @@ test_suite* init_unit_test_suite( int argc, char* argv[] )
 	ts1->add( BOOST_TEST_CASE( &gray_code_generator_flip_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gray_code_generator_reset_tests ) );
 	ts1->add( BOOST_TEST_CASE( &rand_tests ) );
+	ts1->add( BOOST_TEST_CASE( &rand_percent_tests ) );
 	//
 	using namespace stsc::tests_::genetic_optimizer;
 	ts1->add( BOOST_TEST_CASE( &allele_constructor_tests ) );
@@ -30,6 +31,8 @@ test_suite* init_unit_test_suite( int argc, char* argv[] )
 	ts1->add( BOOST_TEST_CASE( &gene_reproduction_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gene_mutation_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gene_reset_tests ) );
+	//
+	ts1->add( BOOST_TEST_CASE( &population_constructor_tests ) );
 
 	return ts1;
 }

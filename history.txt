@@ -5,6 +5,13 @@
 [-] : delete bug
 [+] : new feature
 
+ [00.00.00.07], (11-Apr-2013), Ihar Marozau
+---------------------------------------------------------------------------
+[*] make separate header file random.h for rand and rand_percent
+[+] tests for rand and rand_percent
+[+] population refactoring and tests
+
+
  [00.00.00.07], (8-Apr-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [+] started to add new classes: population optimizer

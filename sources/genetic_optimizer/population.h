@@ -6,30 +6,38 @@
 #include <boost/noncopyable.hpp>
 
 #include <gene.h>
+#include <random.h>
 
 namespace stsc
 {
+	namespace tests_
+	{
+		namespace genetic_optimizer
+		{
+			class population_tests;
+		}
+	}
 	namespace genetic_optimizer
 	{
 		class population : protected virtual boost::noncopyable
 		{
+			friend class stsc::tests_::genetic_optimizer::population_tests;
 		public:
+			typedef details::percent_type percent_type;
 			typedef float fitness_type;
 			typedef std::vector< fitness_type > fitness;
 			typedef boost::shared_ptr< gene > gene_ptr;
 			typedef std::vector< gene_ptr > genotype;
 			
 		private:
-			const size_t size_;
 			genotype genes_;
 
-			const size_t mutation_percent_;
+			const percent_type mutation_percent_;
 
 		public:
-			explicit population( const genome * const genome, const size_t size, const size_t mutation_percent );
+			explicit population( const genome * const genome, const size_t size, const percent_type mutation_percent );
 			~population();
 			//
-			const size_t size() const;
 			const genotype& genes() const;
 			//
 			void life_cycle( const fitness& fitness );

@@ -97,26 +97,7 @@ namespace stsc
 							BOOST_CHECK_EQUAL( gcg.value() <= 18, true );
 						}
 					}
-				}
-				void rand_tests()
-				{
-					static const size_t iterations = 100;
-					static const size_t max_value = 5;
-					bool zero = false;
-					bool max = false;
-					for ( size_t i = 0; i < iterations; ++i )
-					{
-						const size_t r = rand( max_value );
-						if ( r == 0 )
-							zero = true;
-						if ( r == max_value )
-							max = true;
-						if ( zero && max )
-							break;
-					}
-					BOOST_CHECK_EQUAL( zero, true );
-					BOOST_CHECK_EQUAL( max, true );
-				}
+				}				
 			}
 		}
 	}

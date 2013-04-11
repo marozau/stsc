@@ -14,6 +14,9 @@ namespace stsc
 				void gray_code_generator_flip_tests();
 				void gray_code_generator_reset_tests();
 				void rand_tests();
+				void rand_percent_tests();
+				//
+				void rand_tests();
 			}
 			void allele_constructor_tests();
 			void allele_mutation_tests();
@@ -26,6 +29,8 @@ namespace stsc
 			void gene_reproduction_tests();
 			void gene_mutation_tests();
 			void gene_reset_tests();
+			//
+			void population_constructor_tests();
 		}
 	}
 }

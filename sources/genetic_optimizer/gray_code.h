@@ -36,8 +36,6 @@ namespace stsc
 				void reset();
 				void flip();
 			};
-			//
-			const size_t rand( const size_t max );
 		}
 	}
 }

@@ -1,5 +1,7 @@
 #include "gene.h"
 
+#include "random.h"
+
 namespace stsc
 {
 	namespace genetic_optimizer

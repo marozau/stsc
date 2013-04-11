@@ -1,6 +1,6 @@
 #include "gray_code.h"
 
-#include <ctime>
+#include "random.h"
 
 namespace stsc
 {
@@ -70,19 +70,6 @@ namespace stsc
 					else 
 						break;
 				} 
-			}
-			//
-			const size_t rand( const size_t max )
-			{
-				///todo: maybe it'll be more useful to use singleton rand
-				static bool is_seeded = false;
-				if ( !is_seeded )
-				{
-					std::srand( (unsigned int)std::time( NULL ) );
-					is_seeded = true;
-				}				
-				const size_t i = std::rand() % ( max + 1 );
-				return i;
 			}
 		}
 	}
