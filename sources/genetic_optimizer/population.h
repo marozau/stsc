@@ -28,22 +28,24 @@ namespace stsc
 			typedef percent_type fitness_type;
 			typedef std::vector< fitness_type > fitness;
 			typedef boost::shared_ptr< gene > gene_ptr;
-			typedef std::vector< gene_ptr > genotype;
+			typedef std::vector< gene_ptr > generation;
 			
 		private:
-			genotype genes_;
+			generation generation_;
 
-			const percent_type mutation_percent_;
+			const percent_type mutation_rate_;
+			const percent_type reproduction_rate_;
 			const size_t survival_size_;
 
 		public:
 			explicit population( const genome * const genome, 
 								const size_t size, 
-								const percent_type mutation_percent, 
+								const percent_type reproduction_rate, 
+								const percent_type mutation_rate,
 								const percent_type survival_rate );
 			~population();
 			//
-			const genotype& genes() const;
+			const generation& genes() const;
 			void life_cycle( const fitness& fitness );
 			void renewal();
 
