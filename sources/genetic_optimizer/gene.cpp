@@ -10,8 +10,8 @@ namespace stsc
 		{
 			void base_crossover::operator()( const genome::allele_storage& father_alleles, const genome::allele_storage& mother_alleles, genome::allele_storage& child_alleles )
 			{
+				child_alleles.reserve( father_alleles.size() );
 				const size_t i = details::rand( father_alleles.size() - 2 ) + 1; /// -2 ) + 1 is used to make sure that child allele will have both parant alleles.
-				gene::allele_storage temp_alleles;
 				child_alleles.insert( child_alleles.end(), father_alleles.begin(), father_alleles.begin() + i );
 				child_alleles.insert( child_alleles.end(), mother_alleles.begin() + i, mother_alleles.end() );
 			}
@@ -38,12 +38,18 @@ namespace stsc
 		{
 			/// todo: maybe it'll be useful to add const size_t alleles_mutant_count parameter to mutate several aleles
 			const size_t i = details::rand( alleles_.size() - 1 );
+			if ( !alleles_.at( i ).unique() )
+				alleles_.at( i ).reset( new allele( *alleles_.at( i ) ) );
 			alleles_.at( i )->mutation();
 		}
-		void gene::reset()
+		void gene::renewal()
 		{
 			for ( allele_storage::iterator it = alleles_.begin(); it != alleles_.end(); ++it )
+			{
+				if ( !( *it ).unique() )
+					( *it ).reset( new allele( *( *it ) ) );
 				( *it )->reset();
+			}
 		}
 		const size_t gene::size() const
 		{

@@ -27,7 +27,7 @@ namespace stsc
 		}
 		//
 		class population;
-		class gene
+		class gene : boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::gene_tests;
 			friend class population;
@@ -42,13 +42,11 @@ namespace stsc
 
 		private:
 			explicit gene( const genome& gt );
-			explicit gene();
-			explicit gene( const gene& g ) {}
-			gene& operator =( const gene& g ) {}
+			explicit gene(); /// using in reproduction, but may be rewriten 
 			//
 			gene* const reproduction( const gene& g, details::crossover_prototype& func = details::base_crossover() ) const;
 			void mutation();
-			void reset();
+			void renewal();
 			//
 		public:
 			const size_t size() const;

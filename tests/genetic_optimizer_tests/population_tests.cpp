@@ -27,15 +27,86 @@ namespace stsc
 					fill_genome( gt_, 0.0, 200.0 );
 					fill_genome( gt_, 0.0, 300.0 );
 
-					p_ptr p;					
-					BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0 ) ) );
+					p_ptr p;
+					BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0, 1.0 ) ) );
 					BOOST_CHECK_EQUAL( p->genes_.size(), 5 );
 					BOOST_CHECK_EQUAL( p->mutation_percent_, 1.0 );
+					for ( size_t i = 0; i < p->genes_.size(); ++i )
+						BOOST_CHECK_EQUAL( p->genes_.at( i ), p->genes().at( i ) );
+				}
+				static void life_cycle_tests()
+				{
+					{
+						genome gt_;
+						fill_genome( gt_, 0.0, 100.0 );
+						fill_genome( gt_, 0.0, 200.0 );
+						fill_genome( gt_, 0.0, 300.0 );
+
+						p_ptr p;
+						BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0, 1.0 ) ) );
+						population::genotype copy( p->genes_ );
+
+						population::fitness f;
+						f.push_back( 30.0 );
+						f.push_back( 20.0 );
+						f.push_back( 70.0 );
+						f.push_back( 10.0 );
+						BOOST_CHECK_THROW( p->life_cycle( f ), std::invalid_argument );
+						f.push_back( 10.0 );
+						BOOST_CHECK_NO_THROW( p->life_cycle( f ) );
+
+						size_t diffs = 0;
+						for ( size_t i = 0; i < p->genes_.size(); ++i )
+							if ( p->genes_.at( i ) != copy.at( i ) )
+								++diffs;
+						BOOST_CHECK_EQUAL( diffs > 0, true );
+					}
+					{
+						genome gt_;
+						fill_genome( gt_, 0.0, 100.0 );
+						fill_genome( gt_, 0.0, 200.0 );
+						fill_genome( gt_, 0.0, 300.0 );
+
+						p_ptr p;
+						BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 10.0, 1.0 ) ) );
+
+						population::fitness f;
+						f.push_back( 30.0 );
+						f.push_back( 20.0 );
+						f.push_back( 70.0 );
+						f.push_back( 10.0 );
+						f.push_back( 10.0 );
+						for ( size_t i = 0; i < 1000; ++i )
+							BOOST_CHECK_NO_THROW( p->life_cycle( f ) );
+					}
+				}
+				static void renewal_tests()
+				{
+					genome gt_;
+					fill_genome( gt_, 0.0, 100.0 );
+					fill_genome( gt_, 0.0, 200.0 );
+					fill_genome( gt_, 0.0, 300.0 );
+
+					p_ptr p;
+					BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0, 1.0 ) ) );
+					population::genotype copy( p->genes_ );
+
+					BOOST_CHECK_NO_THROW( p->renewal() );
+					size_t diffs = 0;
+					for ( size_t i = 0; i < p->genes_.size(); ++i )
+						if ( p->genes_.at( i ) != copy.at( i ) )
+							++diffs;
+					BOOST_CHECK_EQUAL( diffs > 0, true );
+
 				}
 			};
 			void population_constructor_tests()
 			{
 				population_tests::constructor_tests();
+			}
+			void population_life_cycle_tests()
+			{
+				population_tests::life_cycle_tests();
 			}
 		}
 	}

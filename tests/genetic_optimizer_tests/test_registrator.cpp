@@ -30,9 +30,10 @@ test_suite* init_unit_test_suite( int argc, char* argv[] )
 	ts1->add( BOOST_TEST_CASE( &gene_constructor_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gene_reproduction_tests ) );
 	ts1->add( BOOST_TEST_CASE( &gene_mutation_tests ) );
-	ts1->add( BOOST_TEST_CASE( &gene_reset_tests ) );
+	ts1->add( BOOST_TEST_CASE( &gene_renewal_tests ) );
 	//
 	ts1->add( BOOST_TEST_CASE( &population_constructor_tests ) );
+	ts1->add( BOOST_TEST_CASE( &population_life_cycle_tests ) );
 
 	return ts1;
 }

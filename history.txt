@@ -10,6 +10,7 @@
 [*] make separate header file random.h for rand and rand_percent
 [+] tests for rand and rand_percent
 [+] population refactoring and tests
+[-] fix bug: boost::shared_ptr< allele > crossing between several genes
 
 
  [00.00.00.07], (8-Apr-2013), Ihar Marozau

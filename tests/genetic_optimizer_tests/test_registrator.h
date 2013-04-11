@@ -28,9 +28,10 @@ namespace stsc
 			void gene_constructor_tests();
 			void gene_reproduction_tests();
 			void gene_mutation_tests();
-			void gene_reset_tests();
+			void gene_renewal_tests();
 			//
 			void population_constructor_tests();
+			void population_life_cycle_tests();
 		}
 	}
 }

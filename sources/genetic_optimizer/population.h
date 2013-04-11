@@ -21,10 +21,11 @@ namespace stsc
 	{
 		class population : protected virtual boost::noncopyable
 		{
+			static const size_t min_to_survive;
 			friend class stsc::tests_::genetic_optimizer::population_tests;
 		public:
 			typedef details::percent_type percent_type;
-			typedef float fitness_type;
+			typedef percent_type fitness_type;
 			typedef std::vector< fitness_type > fitness;
 			typedef boost::shared_ptr< gene > gene_ptr;
 			typedef std::vector< gene_ptr > genotype;
@@ -33,19 +34,24 @@ namespace stsc
 			genotype genes_;
 
 			const percent_type mutation_percent_;
+			const size_t survival_size_;
 
 		public:
-			explicit population( const genome * const genome, const size_t size, const percent_type mutation_percent );
+			explicit population( const genome * const genome, 
+								const size_t size, 
+								const percent_type mutation_percent, 
+								const percent_type survival_rate );
 			~population();
 			//
 			const genotype& genes() const;
-			//
 			void life_cycle( const fitness& fitness );
+			void renewal();
 
 		private:
-			void reproduction_( const fitness& fitness, genotype& descendant );
-			void mutation_( genotype& descendant );
+			void reproduction_( const fitness& fitness );
+			void mutation_();
 		};
 	}
 }
+
 #endif // _STSC_GENETIC_OPTIMIZER_POPULATION_H_

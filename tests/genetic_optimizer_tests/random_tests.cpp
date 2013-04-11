@@ -63,7 +63,7 @@ namespace stsc
 							if ( !res.second )
 								same++;
 						}
-						BOOST_CHECK_EQUAL( same < 50, true );
+						BOOST_CHECK_EQUAL( same < 80, true );
 					}
 				}
 			}
