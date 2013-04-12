@@ -28,7 +28,7 @@ namespace stsc
 					fill_genome( gt_, 0.0, 300.0 );
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0, 1.0, 100.0 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, 5, 1.0, 1.0, 100.0 ) ) );
 					BOOST_CHECK_EQUAL( p->generation_.size(), 5 );
 					BOOST_CHECK_EQUAL( p->mutation_rate_, 1.0 );
 					BOOST_CHECK_EQUAL( p->reproduction_rate_, 1.0 );
@@ -36,7 +36,7 @@ namespace stsc
 					for ( size_t i = 0; i < p->generation_.size(); ++i )
 						BOOST_CHECK_EQUAL( p->generation_.at( i ), p->genes().at( i ) );
 
-					BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0, 1.0, 1.0 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, 5, 1.0, 1.0, 1.0 ) ) );
 					BOOST_CHECK_EQUAL( p->survival_size_, 1 );
 				}
 				static void life_cycle_tests()
@@ -48,7 +48,7 @@ namespace stsc
 						fill_genome( gt_, 0.0, 300.0 );
 
 						p_ptr p;
-						BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0, 1.0, 10.0 ) ) );
+						BOOST_CHECK_NO_THROW( p.reset( new population( gt_, 5, 1.0, 1.0, 10.0 ) ) );
 						population::generation copy( p->generation_ );
 
 						population::fitness f;
@@ -73,7 +73,7 @@ namespace stsc
 						fill_genome( gt_, 0.0, 300.0 );
 
 						p_ptr p;
-						BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 10.0, 1.0, 1.0 ) ) );
+						BOOST_CHECK_NO_THROW( p.reset( new population( gt_, 5, 10.0, 1.0, 1.0 ) ) );
 
 						population::fitness f;
 						f.push_back( 30.0 );
@@ -93,7 +93,7 @@ namespace stsc
 					fill_genome( gt_, 0.0, 300.0 );
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( &gt_, 5, 1.0, 1.0, 1.0 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, 5, 1.0, 1.0, 1.0 ) ) );
 					population::generation copy( p->generation_ );
 
 					BOOST_CHECK_NO_THROW( p->renewal() );

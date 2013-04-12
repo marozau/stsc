@@ -7,6 +7,9 @@
 
 #include <gene.h>
 #include <random.h>
+#include <fitness_function.h>
+#include <selection_operator.h>
+#include <stop_function.h>
 
 namespace stsc
 {
@@ -21,37 +24,48 @@ namespace stsc
 	{
 		class population : protected virtual boost::noncopyable
 		{
-			static const size_t min_to_survive;
 			friend class stsc::tests_::genetic_optimizer::population_tests;
+			static const size_t min_to_survive;
+
 		public:
 			typedef details::percent_type percent_type;
-			typedef percent_type fitness_type;
-			typedef std::vector< fitness_type > fitness;
 			typedef boost::shared_ptr< gene > gene_ptr;
 			typedef std::vector< gene_ptr > generation;
+			typedef fitness_function< gene_ptr, percent_type > fitness_function;
+			typedef selection_operator< gene_ptr > selection_operator;
+			typedef stop_function< percent_type > stop_function;
 			
 		private:
 			generation generation_;
+			fitness_function::fitness_container fitnesses_;
 
 			const percent_type mutation_rate_;
 			const percent_type reproduction_rate_;
 			const size_t survival_size_;
 
+			fitness_function& ff_;
+			selection_operator& so_;
+			stop_function& sf_;
+
 		public:
-			explicit population( const genome * const genome, 
-								const size_t size, 
-								const percent_type reproduction_rate, 
+			explicit population( const genome& genome,
+								fitness_function& ff,
+								selection_operator& so,
+								stop_function& sf,
+								const size_t size,
+								const percent_type reproduction_rate,
 								const percent_type mutation_rate,
 								const percent_type survival_rate );
 			~population();
 			//
 			const generation& genes() const;
-			void life_cycle( const fitness& fitness );
+			const bool life_cycle();
 			void renewal();
 
 		private:
-			void reproduction_( const fitness& fitness );
+			void reproduction_();
 			void mutation_();
+			std::pair< size_t, size_t > get_parants_();
 		};
 	}
 }
