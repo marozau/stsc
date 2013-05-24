@@ -22,6 +22,11 @@ namespace stsc
 	}
 	namespace genetic_optimizer
 	{
+		namespace details
+		{
+			std::pair< size_t, size_t > get_parants( const generation& g );
+		}
+		//
 		class population : protected virtual boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::population_tests;
@@ -29,8 +34,6 @@ namespace stsc
 
 		public:
 			typedef details::percent_type percent_type;
-			typedef boost::shared_ptr< gene > gene_ptr;
-			typedef std::vector< gene_ptr > generation;
 			typedef fitness_function< gene_ptr, percent_type > fitness_function;
 			typedef selection_function< gene_ptr, percent_type > selection_function;
 			typedef stop_function< percent_type > stop_function;
@@ -66,10 +69,6 @@ namespace stsc
 			void reproduction_();
 			void mutation_();
 		};
-		namespace details
-		{
-			std::pair< size_t, size_t > get_parants( const population::generation& g );
-		}
 	}
 }
 

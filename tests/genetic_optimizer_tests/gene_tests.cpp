@@ -30,7 +30,6 @@ namespace stsc
 				{					
 					details::fill_genome( gt_ );
 				}
-
 				void constructor_tests()
 				{
 					gene_ptr g;
@@ -81,7 +80,6 @@ namespace stsc
 								++unique;
 						BOOST_CHECK_EQUAL( unique == g_child->alleles_.size(), true );
 					}
-
 				}
 				void mutation_tests()
 				{

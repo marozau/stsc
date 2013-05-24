@@ -11,12 +11,26 @@ namespace stsc
 			void base_crossover::operator()( const genome::allele_storage& father_alleles, const genome::allele_storage& mother_alleles, genome::allele_storage& child_alleles )
 			{
 				child_alleles.reserve( father_alleles.size() );
-				const size_t i = details::rand( father_alleles.size() - 2 ) + 1; /// -2 ) + 1 is used to make sure that child allele will have both parant alleles.
+				const size_t i = details::rand( father_alleles.size() - 2 ) + 1; /// '-2 ) + 1' is used to make sure that child allele will have both parant alleles.
 				child_alleles.insert( child_alleles.end(), father_alleles.begin(), father_alleles.begin() + i );
 				child_alleles.insert( child_alleles.end(), mother_alleles.begin() + i, mother_alleles.end() );
 			}
+			const equal_gene::result_type equal_gene::operator() ( const first_argument_type& f, const second_argument_type& s )
+			{
+				if ( f.size() != s.size() )
+					return false;
+				for ( size_t i = 0; i < f.size(); ++i )
+					if ( f.at( i ) != s.at( i ) )
+						return false;
+				return true;
+			}
+			const equal_gene_ptr::result_type equal_gene_ptr::operator() ( const first_argument_type& f, const second_argument_type& s )
+			{
+				equal_gene eg;
+				return eg.operator()( *f, *s );
+			}
 		}
-		//
+		// 
 		gene::gene( const genome& gt )
 		{
 			alleles_.reserve( gt.alleles_.size() );
@@ -26,6 +40,7 @@ namespace stsc
 		gene::gene()
 		{
 		}
+		//
 		gene* const gene::reproduction( const gene& g, details::crossover_prototype& func ) const
 		{
 			if ( alleles_.size() != g.alleles_.size() )

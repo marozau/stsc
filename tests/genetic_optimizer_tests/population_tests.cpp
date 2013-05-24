@@ -11,7 +11,6 @@ namespace stsc
 	{
 		namespace genetic_optimizer
 		{
-			
 			class population_tests
 			{
 				typedef boost::shared_ptr< population > p_ptr;
@@ -55,22 +54,31 @@ namespace stsc
 				}
 				static void renewal_tests()
 				{
-					/*genome gt_;
+					genome gt_;
 					fill_genome( gt_, 0.0, 100.0 );
 					fill_genome( gt_, 0.0, 200.0 );
 					fill_genome( gt_, 0.0, 300.0 );
 
+					test_fitness::equation_type e;
+					e.push_back( 1.0 );
+					e.push_back( 2.0 );
+					e.push_back( 3.0 );
+					const double result = 35.0;
+					test_fitness tf( e, result );
+					turnament_selection ts;
+					test_zero_stop tzs;
+
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, 5, 1.0, 1.0, 1.0 ) ) );
-					population::generation copy( p->generation_ );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0 ) ) );
+					gene::allele_storage copy( p->generation_.front()->alleles_ );
 
 					BOOST_CHECK_NO_THROW( p->renewal() );
 					size_t diffs = 0;
-					for ( size_t i = 0; i < p->generation_.size(); ++i )
-						if ( p->generation_.at( i ) != copy.at( i ) )
-							++diffs;
-					BOOST_CHECK_EQUAL( diffs > 0, true );*/
-
+					bool res = true;
+					for ( size_t i = 0; i < p->generation_.front()->alleles_.size(); ++i )
+						if ( p->generation_.front()->alleles_.at( i )->value() != copy.at( i )->value() )
+								res = false;						
+					BOOST_CHECK_EQUAL( res, false );
 				}
 			};
 			void population_constructor_tests()
@@ -80,6 +88,10 @@ namespace stsc
 			void population_life_cycle_tests()
 			{
 				population_tests::life_cycle_tests();
+			}
+			void population_renewal_tests()
+			{
+				population_tests::renewal_tests();
 			}
 		}
 	}

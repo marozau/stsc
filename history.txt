@@ -5,6 +5,10 @@
 [-] : delete bug
 [+] : new feature
 
+ [00.00.00.07], (25-May-2013), Ihar Marozau
+---------------------------------------------------------------------------
+[+] write renewal_tests for population tests
+
  [00.00.00.07], (12-Apr-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [+] add fitness_function and  stop_function to population class (try to realize DIP)

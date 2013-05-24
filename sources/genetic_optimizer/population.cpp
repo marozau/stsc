@@ -4,6 +4,20 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
+		namespace details
+		{
+			std::pair< size_t, size_t > get_parants( const generation& g )
+			{
+				const size_t male = details::rand( g.size() - 1 );
+				size_t female = 0;
+				do
+				{
+					female = details::rand( g.size() - 1 ); 
+				} while ( male != female );
+				return std::make_pair( male, female );
+			}
+		}
+		//
 		const size_t population::min_to_survive = 1;
 		population::population( const genome& genome, 
 								fitness_function& ff,
@@ -32,7 +46,7 @@ namespace stsc
 		{
 		}
 		//
-		const population::generation& population::genes() const
+		const generation& population::genes() const
 		{
 			return generation_;
 		}
@@ -67,19 +81,6 @@ namespace stsc
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
 				if ( mutation_rate_ >= details::rand_percent() )
 					( *it )->mutation();
-		}
-		namespace details
-		{
-			std::pair< size_t, size_t > get_parants( const population::generation& g )
-			{
-				const size_t male = details::rand( g.size() - 1 );
-				size_t female = 0;
-				do
-				{
-					female = details::rand( g.size() - 1 ); 
-				} while ( male != female );
-				return std::make_pair( male, female );
-			}
 		}
 	}
 }
