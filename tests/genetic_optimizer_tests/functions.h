@@ -23,7 +23,10 @@ namespace stsc
 				{
 					typedef std::set< size_t > turnament_grid;
 					turnament_grid tg;
-					std::vector< container_type::value_type > base_mp( g.begin(), g.end() );
+					std::vector< container_type::value_type > base_mp;
+					for( container_type::const_iterator it = g.begin(); it != g.end(); ++it )
+						base_mp.push_back( *it );
+
 					mating_pool mp;
 					mp.reserve( g.size() );
 					while ( mp.size() < g.size() )
