@@ -2,6 +2,7 @@
 #define _STSC_TESTS_GENETIC_OPTIMIZER_FUNCTIONS_H_
 
 #include <algorithm>
+#include <set>
 
 #include <population.h>
 #include <random.h>
@@ -18,14 +19,21 @@ namespace stsc
 			public:
 				virtual gene_container calculate( const gene_container& g, const fitness_container& f )
 				{
+					typedef std::set< size_t > turnament_grid;
+					turnament_grid tg;
 					gene_container parant_pool;
 					parant_pool.reserve( g.size() );
 					while ( parant_pool.size() < g.size() )
 					{
 						size_t first_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
-						size_t second_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
-						parant_pool.push_back( f.at( first_partner ) > f.at( second_partner ) ?
-							g.at( first_partner ) : g.at( second_partner ) );
+						size_t second_partner = 0;
+						do
+						{
+							second_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
+						} while ( second_partner == first_partner );
+						if ( tg.insert( first_partner * second_partner + ( first_partner + second_partner ) ).second )
+							parant_pool.push_back( f.at( first_partner ) > f.at( second_partner ) ?
+								g.at( first_partner ) : g.at( second_partner ) );
 					}
 					return parant_pool;
 				}

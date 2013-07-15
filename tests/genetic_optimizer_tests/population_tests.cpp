@@ -94,7 +94,7 @@ namespace stsc
 					test_zero_stop tzs;
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 30.0, 2.0, 1.0 ) ) );
 
 					static const size_t max_cycles = 1000000;
 					size_t i = 0;

@@ -13,7 +13,7 @@ namespace stsc
 				do
 				{
 					female = details::rand( g.size() - 1 ); 
-				} while ( male != female );
+				} while ( male == female );
 				return std::make_pair( male, female );
 			}
 		}
@@ -75,7 +75,7 @@ namespace stsc
 			while ( descendant.size() < generation_.size() )
 			{
 				std::pair< size_t, size_t > parants = details::get_parants( parants_pool );
-				if ( reproduction_rate_ >= details::rand_percent() && 
+				if ( details::rand_percent() >= reproduction_rate_ && 
 					parants_pool.at( parants.first ) != parants_pool.at( parants.second ) )
 				{
 					gene_ptr new_gene( parants_pool.at( parants.first )->reproduction( *parants_pool.at( parants.second ) ) );
