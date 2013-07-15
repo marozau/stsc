@@ -11,11 +11,12 @@ namespace stsc
 		class fitness_function
 		{
 		public:
+			typename typedef container container_type;
 			typename typedef container::key_type gene_type;
 			typename typedef container::mapped_type fitness_type;
 
 		public:
-			virtual void calculate( const container& ) = 0;
+			virtual void calculate( container_type& ) = 0;
 		};
 	}
 }

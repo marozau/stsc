@@ -11,11 +11,12 @@ namespace stsc
 		class stop_function
 		{
 		public:
+			typename typedef container container_type;
 			typename typedef container::key_type gene_type;
 			typename typedef container::mapped_type fitness_type;
 
 		public:
-			virtual const bool calculate( const container& ) = 0;
+			virtual const bool calculate( const container_type& ) = 0;
 		};
 	}
 }

@@ -11,13 +11,14 @@ namespace stsc
 		class selection_function
 		{
 		public:
+			typename typedef container container_type;
 			typename typedef container::key_type gene_type;
 			typename typedef container::mapped_type fitness_type;
 
 			typename typedef std::vector< gene_type > mating_pool;
 
 		public:
-			virtual mating_pool calculate( const container& ) = 0;
+			virtual mating_pool calculate( const container_type& ) = 0;
 		};
 	}
 }

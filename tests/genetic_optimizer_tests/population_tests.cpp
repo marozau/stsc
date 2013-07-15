@@ -43,8 +43,8 @@ namespace stsc
 					BOOST_CHECK_EQUAL( p->mutation_rate_, 1.0 );
 					BOOST_CHECK_EQUAL( p->reproduction_rate_, 1.0 );
 					BOOST_CHECK_EQUAL( p->survival_size_, 5 );
-					for ( size_t i = 0; i < p->generation_.size(); ++i )
-						BOOST_CHECK_EQUAL( p->generation_.at( i ), p->genes().at( i ) );
+					BOOST_CHECK_EQUAL( p->max_reproduction_iteration_count_, 10 );
+					BOOST_CHECK_EQUAL( p->global_max_reproduction_iteration_count_, 30 );
 
 					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0, 10, 30 ) ) );
 					BOOST_CHECK_EQUAL( p->survival_size_, 1 );
@@ -67,13 +67,13 @@ namespace stsc
 
 					p_ptr p;
 					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0, 10, 30 ) ) );
-					gene::allele_storage copy( p->generation_.front()->alleles_ );
+					gene::allele_storage copy( p->generation_.begin()->first->alleles_ );
 
 					BOOST_CHECK_NO_THROW( p->renewal() );
 					size_t diffs = 0;
 					bool res = true;
-					for ( size_t i = 0; i < p->generation_.front()->alleles_.size(); ++i )
-						if ( p->generation_.front()->alleles_.at( i )->value() != copy.at( i )->value() )
+					for ( size_t i = 0; i < p->generation_.begin()->first->alleles_.size(); ++i )
+						if ( p->generation_.begin()->first->alleles_.at( i )->value() != copy.at( i )->value() )
 								res = false;
 					BOOST_CHECK_EQUAL( res, false );
 				}
