@@ -105,6 +105,13 @@ namespace stsc
 						++i;
 					} while ( !is_stop && i < max_cycles );
 					BOOST_CHECK_EQUAL( i < max_cycles, true );
+					for( population::generation::const_iterator it = p->get().begin(); it != p->get().end(); ++it )
+						std::cout << "equation: " 
+						<< it->first->at( 0 ) << " "
+						<< it->first->at( 1 ) << " "
+						<< it->first->at( 2 ) << " "
+						<< " ; rating" << it->second << std::endl;
+					std::cout << "Iterations: " << i << std::endl;
 				}
 			};
 			void population_constructor_tests()
