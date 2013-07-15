@@ -20,7 +20,7 @@ namespace stsc
 					if ( max_bin.test( i ) )
 						last_set_bit = i;
 				}
-				size_ = last_set_bit;
+				size_ = last_set_bit + 1;
 			}
 			const size_t gray_code::size() const
 			{
@@ -36,15 +36,15 @@ namespace stsc
 			}
 			void gray_code::flip( const size_t pos )
 			{
-				if ( pos > size_ )
+				if ( pos >= size_ )
 					throw std::invalid_argument( "gray_code flip error: pos out of range" );
 				code_.flip( pos );
 			}
 			void gray_code::combine( const gray_code& gc, const size_t crossing_point )
 			{
-				if ( gc.size_ > size_ || crossing_point > size_ )
+				if ( gc.size_ != size_ || crossing_point >= size_ )
 					throw std::invalid_argument( "gray_code error: bad combining gray code size or crossing position" );
-				for ( size_t i = crossing_point; i <= size_; ++i )  
+				for ( size_t i = crossing_point; i < size_; ++i )  
 					code_.at( i ) = gc.code_.at( i );
 			}
 			const gray_code combine( const gray_code& gc1, const gray_code& gc2, const size_t crossing_point )
@@ -66,7 +66,7 @@ namespace stsc
 			}
 			gray_code_generator::gray_code_generator( const gray_code_generator& gcg1, const gray_code_generator& gcg2 )
 				: max_( gcg1.max_ )
-				, gc_( combine( gcg1.gc_, gcg2.gc_, rand( gcg1.gc_.size() - 1 ) ) )
+				, gc_( combine( gcg1.gc_, gcg2.gc_, rand( gcg1.gc_.size() - 2 ) + 1 ) )
 			{
 				if ( gcg1.max_ != gcg2.max_ )
 					throw std::invalid_argument( "gray_code_generator constructor error: gcg1.max != gcg2.max_" );

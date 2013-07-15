@@ -32,6 +32,7 @@ namespace stsc
 				throw std::invalid_argument( "allele copy constructor error: max values must be equal" );
 			if ( mother_allele.step_ != father_allele.step_ )
 				throw std::invalid_argument( "allele copy constructor error: step values must be equal" );
+			calculate_value_();
 		}
 		const allele::value_type allele::value() const
 		{

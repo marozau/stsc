@@ -31,7 +31,7 @@ namespace stsc
 						{
 							second_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
 						} while ( second_partner == first_partner );
-						if ( tg.insert( first_partner * second_partner + ( first_partner + second_partner ) ).second )
+						if ( tg.insert( ( first_partner + 1 ) * ( second_partner + 1 ) ).second )
 							parant_pool.push_back( f.at( first_partner ) > f.at( second_partner ) ?
 								g.at( first_partner ) : g.at( second_partner ) );
 					}
