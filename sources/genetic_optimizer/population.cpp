@@ -26,23 +26,27 @@ namespace stsc
 								const size_t size, 
 								const percent_type reproduction_rate,
 								const percent_type mutation_rate,
-								const percent_type survival_rate )
+								const percent_type survival_rate,
+								const size_t max_reproduction_iteration_count,
+								const size_t global_max_reproduction_iteration_count )
 			: ff_( ff )
 			, sel_f_( sel_f )
 			, stop_f_( stop_f )
 			, reproduction_rate_( reproduction_rate )
 			, mutation_rate_( mutation_rate )
 			, survival_size_( ( size_t )( size * survival_rate / 100 ) ? ( size_t )( size * survival_rate / 100 ) : min_to_survive )
+			, max_reproduction_iteration_count_( max_reproduction_iteration_count )
+			, global_max_reproduction_iteration_count_( global_max_reproduction_iteration_count )
 		{
 			if ( size <= 1 )
 				throw std::invalid_argument( "population construction error: size of population must be greater than 1" );
 
 			generation_.reserve( size );
-			for ( size_t i = 0; i < size; ++i )
+			while( generation_.size() < size )
 			{
-				gene_ptr new_gene( genome.create_gene() );
-				generation_.push_back( new_gene );
-				hash_storage_.insert( new_gene->hash() );
+				gene_ptr new_gene( genome.create_gene() );				
+				if ( hash_storage_.insert( new_gene->hash() ).second ) 
+					generation_.push_back( new_gene );
 			}
 			fitnesses_ = ff_.calculate( generation_ );
 		}
@@ -72,15 +76,30 @@ namespace stsc
 			selection_function::gene_container parants_pool = sel_f_.calculate( generation_, fitnesses_ ); ///todo: tests what will be faster: = or pass vector as argument reference
 			generation descendant;
 			descendant.reserve( generation_.size() );
+			size_t iteration = 0;
+			size_t global_iteration = 0;
 			while ( descendant.size() < generation_.size() )
 			{
 				std::pair< size_t, size_t > parants = details::get_parants( parants_pool );
-				if ( details::rand_percent() >= reproduction_rate_ && 
-					parants_pool.at( parants.first ) != parants_pool.at( parants.second ) )
+				if ( parants_pool.at( parants.first ) != parants_pool.at( parants.second ) )
 				{
 					gene_ptr new_gene( new gene( *parants_pool.at( parants.first ), *parants_pool.at( parants.second ), details::bit_crossover() ) );
 					if ( hash_storage_.insert( new_gene->hash() ).second )
-						descendant.push_back( new_gene );
+						descendant.push_back( new_gene );					
+				}
+				++iteration;
+				++global_iteration;
+				if ( iteration > max_reproduction_iteration_count_ )
+				{
+					parants_pool = sel_f_.calculate( generation_, fitnesses_ ); 
+					iteration = 0;
+					if ( global_iteration > global_max_reproduction_iteration_count_ )
+					{
+						fitness_function::fitness_container::const_iterator it = std::min_element( fitnesses_.begin(), fitnesses_.end() );
+						const size_t pos = it - fitnesses_.begin();
+						generation_.at( pos )->renewal();
+						return;
+					}
 				}
 			}
 			generation_.swap( descendant );

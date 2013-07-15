@@ -57,6 +57,7 @@ namespace stsc
 		void gene::mutation()
 		{
 			/// todo: maybe it'll be useful to add const size_t alleles_mutant_count parameter to mutate several aleles
+			// todo: all allele's bit should be checked on mutation rate in for loop
 			const size_t i = details::rand( alleles_.size() - 1 );
 			if ( !alleles_.at( i ).unique() )
 				alleles_.at( i ).reset( new allele( *alleles_.at( i ) ) );
@@ -75,7 +76,7 @@ namespace stsc
 		{
 			stsc::genetic_optimizer::hash h;
 			for ( allele_storage::const_iterator it = alleles_.begin(); it != alleles_.end(); ++it )
-				h.calculate( ( *it )->value() );		
+				h.calculate( ( *it )->value() );
 			return h.get_value();
 		}
 		const size_t gene::size() const

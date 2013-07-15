@@ -54,6 +54,9 @@ namespace stsc
 
 			hash_storage hash_storage_;
 
+			const size_t max_reproduction_iteration_count_;
+			const size_t global_max_reproduction_iteration_count_;
+
 		public:
 			explicit population( const genome& genome,
 								fitness_function& ff,
@@ -62,12 +65,16 @@ namespace stsc
 								const size_t size,
 								const percent_type reproduction_rate,
 								const percent_type mutation_rate,
-								const percent_type survival_rate );
+								const percent_type survival_rate,
+								const size_t max_reproduction_iteration_count,
+								const size_t global_max_reproduction_iteration_count );
 			~population();
 			//
 			const generation& genes() const;
 			const bool life_cycle();
 			void renewal();
+			//
+			void get() const;
 
 		private:
 			void reproduction_();
