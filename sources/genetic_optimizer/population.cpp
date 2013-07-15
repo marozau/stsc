@@ -4,34 +4,20 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		namespace details
-		{
-			std::pair< size_t, size_t > get_parants( const generation& g )
-			{
-				const size_t male = details::rand( g.size() - 1 );
-				size_t female = 0;
-				do
-				{
-					female = details::rand( g.size() - 1 ); 
-				} while ( male == female );
-				return std::make_pair( male, female );
-			}
-		}
-		//
 		const size_t population::min_to_survive = 1;
 		population::population( const genome& genome, 
 								fitness_function& ff,
 								selection_function& sel_f,
 								stop_function& stop_f,
 								const size_t size, 
-								const percent_type reproduction_rate,
-								const percent_type mutation_rate,
-								const percent_type survival_rate,
+								const double reproduction_rate,
+								const double mutation_rate,
+								const double survival_rate,
 								const size_t max_reproduction_iteration_count,
 								const size_t global_max_reproduction_iteration_count )
-			: ff_( ff )
-			, sel_f_( sel_f )
-			, stop_f_( stop_f )
+			: fitness_function_( ff )
+			, selection_function_( sel_f )
+			, stop_function_( stop_f )
 			, reproduction_rate_( reproduction_rate )
 			, mutation_rate_( mutation_rate )
 			, survival_size_( ( size_t )( size * survival_rate / 100 ) ? ( size_t )( size * survival_rate / 100 ) : min_to_survive )
@@ -41,20 +27,19 @@ namespace stsc
 			if ( size <= 1 )
 				throw std::invalid_argument( "population construction error: size of population must be greater than 1" );
 
-			generation_.reserve( size );
 			while( generation_.size() < size )
 			{
 				gene_ptr new_gene( genome.create_gene() );				
 				if ( hash_storage_.insert( new_gene->hash() ).second ) 
-					generation_.push_back( new_gene );
+					generation_.insert( std::make_pair( new_gene, 0 ) );
 			}
-			fitnesses_ = ff_.calculate( generation_ );
+			fitness_function_.calculate( generation_ );
 		}
 		population::~population()
 		{
 		}
 		//
-		const generation& population::genes() const
+		const population::generation& population::get() const
 		{
 			return generation_;
 		}
@@ -62,42 +47,45 @@ namespace stsc
 		{
 			reproduction_();
 			mutation_();
-			fitnesses_ = ff_.calculate( generation_ );
-			const bool is_stop = stop_f_.calculate( fitnesses_ );
+			fitness_function_.calculate( generation_ );
+			const bool is_stop = stop_function_.calculate( generation_ );
 			return is_stop;
 		}
 		void population::renewal()
 		{
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
-				( *it )->renewal();
+			{
+				it->first->renewal();
+				it->second = 0;
+			}
 		}
 		void population::reproduction_()
 		{
-			selection_function::gene_container parants_pool = sel_f_.calculate( generation_, fitnesses_ ); ///todo: tests what will be faster: = or pass vector as argument reference
+			selection_function::mating_pool mating_pool = selection_function_.calculate( generation_ ); ///todo: tests what will be faster: = or pass vector as argument reference
 			generation descendant;
-			descendant.reserve( generation_.size() );
 			size_t iteration = 0;
 			size_t global_iteration = 0;
 			while ( descendant.size() < generation_.size() )
 			{
-				std::pair< size_t, size_t > parants = details::get_parants( parants_pool );
-				if ( parants_pool.at( parants.first ) != parants_pool.at( parants.second ) )
-				{
-					gene_ptr new_gene( new gene( *parants_pool.at( parants.first ), *parants_pool.at( parants.second ), details::bit_crossover() ) );
-					if ( hash_storage_.insert( new_gene->hash() ).second )
-						descendant.push_back( new_gene );					
-				}
+				parants parants = details::get_parants( mating_pool );
+				gene_ptr new_gene( new gene( *parants.first, *parants.second, details::bit_crossover() ) );
+				if ( hash_storage_.insert( new_gene->hash() ).second )
+					descendant.insert( std::make_pair( new_gene, 0 ) );
+				
 				++iteration;
 				++global_iteration;
 				if ( iteration > max_reproduction_iteration_count_ )
 				{
-					parants_pool = sel_f_.calculate( generation_, fitnesses_ ); 
+					mating_pool = selection_function_.calculate( generation_ );
 					iteration = 0;
 					if ( global_iteration > global_max_reproduction_iteration_count_ )
 					{
-						fitness_function::fitness_container::const_iterator it = std::min_element( fitnesses_.begin(), fitnesses_.end() );
-						const size_t pos = it - fitnesses_.begin();
-						generation_.at( pos )->renewal();
+						generation::iterator min_it = generation_.begin();
+						for( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
+							if ( it->second < min_it->second )
+								min_it = it;
+						min_it->first->renewal();
+						min_it->second = 0;
 						return;
 					}
 				}
@@ -108,7 +96,20 @@ namespace stsc
 		{
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
 				if ( mutation_rate_ >= details::rand_percent() )
-					( *it )->mutation();
+					it->first->mutation();
+		}
+		namespace details
+		{
+			population::parants get_parants( const population::selection_function::mating_pool& mp )
+			{
+				const size_t male = details::rand( mp.size() - 1 );
+				size_t female = 0;
+				do
+				{
+					female = details::rand( mp.size() - 1 ); 
+				} while ( male == female && mp.at( male ) != mp.at( female ) );
+				return population::parants( mp.at( male ), mp.at( female ) ) ;
+			}
 		}
 	}
 }

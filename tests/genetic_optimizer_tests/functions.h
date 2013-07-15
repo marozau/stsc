@@ -17,13 +17,13 @@ namespace stsc
 			class turnament_selection : public stsc::genetic_optimizer::population::selection_function
 			{
 			public:
-				virtual gene_container calculate( const gene_container& g, const fitness_container& f )
+				virtual mating_pool calculate( const population::generation& g )
 				{
 					typedef std::set< size_t > turnament_grid;
 					turnament_grid tg;
-					gene_container parant_pool;
-					parant_pool.reserve( g.size() );
-					while ( parant_pool.size() < g.size() )
+					mating_pool mp;
+					mp.reserve( g.size() );
+					while ( mp.size() < g.size() )
 					{
 						size_t first_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
 						size_t second_partner = 0;

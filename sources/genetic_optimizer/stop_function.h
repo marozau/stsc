@@ -7,14 +7,15 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		template< class T >
+		template < class container = std::map< gene_ptr, double > >
 		class stop_function
 		{
 		public:
-			typename typedef T fitness_type;
-			typename typedef std::vector< fitness_type > fitness_container;
+			typename typedef container::key_type gene_type;
+			typename typedef container::mapped_type fitness_type;
+
 		public:
-			virtual const bool calculate( const fitness_container& ) = 0;
+			virtual const bool calculate( const container& ) = 0;
 		};
 	}
 }

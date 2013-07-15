@@ -7,14 +7,17 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		template< class gene_type, class fitness_type >
+		template < class container = std::map< gene_ptr, double > >
 		class selection_function
 		{
 		public:
-			typename typedef std::vector< gene_type > gene_container;
-			typename typedef std::vector< fitness_type > fitness_container;
+			typename typedef container::key_type gene_type;
+			typename typedef container::mapped_type fitness_type;
+
+			typename typedef std::vector< gene_type > mating_pool;
+
 		public:
-			virtual gene_container calculate( const gene_container&, const fitness_container& ) = 0;
+			virtual mating_pool calculate( const container& ) = 0;
 		};
 	}
 }

@@ -21,20 +21,6 @@ namespace stsc
 				for( size_t i = 0; i != father_alleles.size(); ++i )
 					child_alleles.push_back( gene::allele_ptr( new allele( *father_alleles.at( i ), *mother_alleles.at( i ) ) ) );
 			}
-			const equal_gene::result_type equal_gene::operator() ( const first_argument_type& f, const second_argument_type& s )
-			{
-				if ( f.size() != s.size() )
-					return false;
-				for ( size_t i = 0; i < f.size(); ++i )
-					if ( f.at( i ) != s.at( i ) )
-						return false;
-				return true;
-			}
-			const equal_gene_ptr::result_type equal_gene_ptr::operator() ( const first_argument_type& f, const second_argument_type& s )
-			{
-				equal_gene eg;
-				return eg.operator()( *f, *s );
-			}
 		}
 		//
 		gene::gene( const genome& gt )

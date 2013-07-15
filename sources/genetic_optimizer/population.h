@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <set>
+#include <map>
 
 #include <boost/noncopyable.hpp>
 
@@ -23,34 +24,30 @@ namespace stsc
 	}
 	namespace genetic_optimizer
 	{
-		namespace details
-		{
-			std::pair< size_t, size_t > get_parants( const generation& g );
-		}
-		//
 		class population : protected virtual boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::population_tests;
 			static const size_t min_to_survive;
 
 		public:
-			typedef details::percent_type percent_type;
-			typedef fitness_function< gene_ptr, percent_type > fitness_function;
-			typedef selection_function< gene_ptr, percent_type > selection_function;
-			typedef stop_function< percent_type > stop_function;
+			typedef std::pair< gene_ptr, gene_ptr > parants;
+			typedef std::pair< gene_ptr, double > gene_pair;
+			typedef std::map< gene_ptr, double > generation;
+			typedef fitness_function< generation > fitness_function;
+			typedef selection_function< generation > selection_function;
+			typedef stop_function< generation > stop_function;
 			typedef std::set< size_t > hash_storage;
 			
 		private:
 			generation generation_;
-			fitness_function::fitness_container fitnesses_;
 
-			const percent_type mutation_rate_;
-			const percent_type reproduction_rate_;
+			const double mutation_rate_;
+			const double reproduction_rate_;
 			const size_t survival_size_;
 
-			fitness_function& ff_;
-			selection_function& sel_f_;
-			stop_function& stop_f_;
+			fitness_function& fitness_function_;
+			selection_function& selection_function_;
+			stop_function& stop_function_;
 
 			hash_storage hash_storage_;
 
@@ -63,23 +60,25 @@ namespace stsc
 								selection_function& sel_f,
 								stop_function& stop_f,
 								const size_t size,
-								const percent_type reproduction_rate,
-								const percent_type mutation_rate,
-								const percent_type survival_rate,
+								const double reproduction_rate,
+								const double mutation_rate,
+								const double survival_rate,
 								const size_t max_reproduction_iteration_count,
 								const size_t global_max_reproduction_iteration_count );
 			~population();
 			//
-			const generation& genes() const;
+			const generation& get() const;
 			const bool life_cycle();
 			void renewal();
-			//
-			void get() const;
 
 		private:
 			void reproduction_();
 			void mutation_();
 		};
+		namespace details
+		{
+			population::parants get_parants( const population::selection_function::mating_pool& mp );
+		}
 	}
 }
 

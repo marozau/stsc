@@ -15,11 +15,6 @@ namespace stsc
 	}
 	namespace genetic_optimizer
 	{
-		class gene;
-		//
-		typedef boost::shared_ptr< gene > gene_ptr;
-		typedef std::vector< gene_ptr > generation;
-		//
 		namespace details
 		{
 			struct crossover_prototype 
@@ -33,16 +28,6 @@ namespace stsc
 			struct bit_crossover : public crossover_prototype
 			{
 				virtual void operator()( const genome::allele_storage&, const genome::allele_storage&, genome::allele_storage& );
-			};
-			class equal_gene : public std::binary_function< gene, gene, bool >
-			{
-			public:
-				const result_type operator() ( const first_argument_type& f, const second_argument_type& s );
-			};
-			class equal_gene_ptr : public std::binary_function< gene_ptr, gene_ptr, bool >
-			{
-			public:
-				const result_type operator() ( const first_argument_type& f, const second_argument_type& s );
 			};
 		}
 		//
@@ -71,6 +56,7 @@ namespace stsc
 			const size_t size() const;
 			const allele::value_type at( const size_t i ) const;
 		};
+		typedef boost::shared_ptr< gene > gene_ptr;
 	}
 }
 
