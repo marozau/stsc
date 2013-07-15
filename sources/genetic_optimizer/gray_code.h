@@ -22,7 +22,10 @@ namespace stsc
 				const size_t size() const;
 				const size_t decode() const;
 				void flip( const size_t pos );
+				void combine( const gray_code& gc, const size_t crossing_point );
 			};
+			const gray_code combine( const gray_code& gc1, const gray_code& gc2, const size_t crossing_point );
+			//
 			class gray_code_generator
 			{
 				const size_t max_;
@@ -31,6 +34,7 @@ namespace stsc
 			public:
 				explicit gray_code_generator( const size_t max );
 				gray_code_generator( const gray_code_generator& gcg );
+				gray_code_generator( const gray_code_generator& gcg1, const gray_code_generator& gcg2 );
 				//
 				const size_t value() const;
 				void reset();

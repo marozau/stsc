@@ -21,6 +21,7 @@ namespace stsc
 		class allele : protected virtual boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::allele_tests;
+			friend const allele combine( const allele& mother_allele, const allele& father_allele, const size_t crossing_point );
 
 		public:
 			typedef double value_type;
@@ -36,6 +37,7 @@ namespace stsc
 		public:
 			explicit allele( const value_type min, const value_type max, const value_type step );
 			allele( const allele& a );
+			allele( const allele& mother_allele, const allele& father_allele );
 			//
 			const value_type value() const;
 			void mutation();
@@ -44,6 +46,7 @@ namespace stsc
 		private:
 			void calculate_value_();
 		};
+
 		namespace details
 		{
 			const size_t calculate_periods_count( const allele::value_type min, const allele::value_type max, const allele::value_type step );

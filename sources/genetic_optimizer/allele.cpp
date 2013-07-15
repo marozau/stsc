@@ -20,6 +20,19 @@ namespace stsc
 		{
 			calculate_value_();
 		}
+		allele::allele( const allele& mother_allele, const allele& father_allele )
+			: min_( mother_allele.min_ )
+			, max_( mother_allele.max_ )
+			, step_( mother_allele.step_ )
+			, gcg_( mother_allele.gcg_, father_allele.gcg_ )
+		{
+			if ( mother_allele.min_ != father_allele.min_ )
+				throw std::invalid_argument( "allele copy constructor error: min values must be equal" );
+			if ( mother_allele.max_ != father_allele.max_ )
+				throw std::invalid_argument( "allele copy constructor error: max values must be equal" );
+			if ( mother_allele.step_ != father_allele.step_ )
+				throw std::invalid_argument( "allele copy constructor error: step values must be equal" );
+		}
 		const allele::value_type allele::value() const
 		{
 			return value_;
