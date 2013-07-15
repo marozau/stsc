@@ -39,7 +39,11 @@ namespace stsc
 
 			generation_.reserve( size );
 			for ( size_t i = 0; i < size; ++i )
-				generation_.push_back( gene_ptr( genome.create_gene() ) );
+			{
+				gene_ptr new_gene( genome.create_gene() );
+				generation_.push_back( new_gene );
+				hash_storage_.insert( new_gene->hash() );
+			}
 			fitnesses_ = ff_.calculate( generation_ );
 		}
 		population::~population()
@@ -71,8 +75,13 @@ namespace stsc
 			while ( descendant.size() < generation_.size() )
 			{
 				std::pair< size_t, size_t > parants = details::get_parants( parants_pool );
-				if ( reproduction_rate_ >= details::rand_percent() )
-					descendant.push_back( gene_ptr( parants_pool.at( parants.first )->reproduction( *parants_pool.at( parants.second ) ) ) );
+				if ( reproduction_rate_ >= details::rand_percent() && 
+					parants_pool.at( parants.first ) != parants_pool.at( parants.second ) )
+				{
+					gene_ptr new_gene( parants_pool.at( parants.first )->reproduction( *parants_pool.at( parants.second ) ) );
+					if ( hash_storage_.insert( new_gene->hash() ).second )
+						descendant.push_back( new_gene );
+				}
 			}
 			generation_.swap( descendant );
 		}

@@ -2,6 +2,7 @@
 #define _STSC_GENETIC_OPTIMIZER_POPULATION_H_
 
 #include <vector>
+#include <set>
 
 #include <boost/noncopyable.hpp>
 
@@ -37,6 +38,7 @@ namespace stsc
 			typedef fitness_function< gene_ptr, percent_type > fitness_function;
 			typedef selection_function< gene_ptr, percent_type > selection_function;
 			typedef stop_function< percent_type > stop_function;
+			typedef std::set< size_t > hash_storage;
 			
 		private:
 			generation generation_;
@@ -49,6 +51,8 @@ namespace stsc
 			fitness_function& ff_;
 			selection_function& sel_f_;
 			stop_function& stop_f_;
+
+			hash_storage hash_storage_;
 
 		public:
 			explicit population( const genome& genome,
