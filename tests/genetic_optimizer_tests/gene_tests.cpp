@@ -49,7 +49,7 @@ namespace stsc
 					g_mother->renewal();
 					{
 						gene_ptr g_child;
-						BOOST_CHECK_NO_THROW( g_child.reset( g_father->reproduction( *g_mother ) ) );
+						BOOST_CHECK_NO_THROW( g_child.reset( new gene( *g_father, *g_mother, stsc::genetic_optimizer::details::base_crossover() ) ) );
 						size_t unique = 0;
 						for ( gene::allele_storage::iterator it =  g_child->alleles_.begin(); it != g_child->alleles_.end(); ++it )
 							if ( ( *it ).unique() )
@@ -65,7 +65,7 @@ namespace stsc
 					}
 					{
 						gene_ptr g_child;
-						BOOST_CHECK_NO_THROW( g_child.reset( g_father->reproduction( *g_mother ) ) );
+						BOOST_CHECK_NO_THROW( g_child.reset( new gene( *g_father, *g_mother, stsc::genetic_optimizer::details::base_crossover() ) ) );
 						size_t unique = 0;
 						for ( gene::allele_storage::iterator it =  g_child->alleles_.begin(); it != g_child->alleles_.end(); ++it )
 							if ( ( *it ).unique() )

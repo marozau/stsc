@@ -78,7 +78,7 @@ namespace stsc
 				if ( details::rand_percent() >= reproduction_rate_ && 
 					parants_pool.at( parants.first ) != parants_pool.at( parants.second ) )
 				{
-					gene_ptr new_gene( parants_pool.at( parants.first )->reproduction( *parants_pool.at( parants.second ) ) );
+					gene_ptr new_gene( new gene( *parants_pool.at( parants.first ), *parants_pool.at( parants.second ), details::bit_crossover() ) );
 					if ( hash_storage_.insert( new_gene->hash() ).second )
 						descendant.push_back( new_gene );
 				}

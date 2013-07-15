@@ -60,16 +60,14 @@ namespace stsc
 		private:
 			allele_storage alleles_;
 
-		private:
+		public:
 			explicit gene( const genome& gt );
 			explicit gene( const gene& father_gene, const gene& mother_gene, details::crossover_prototype& func );
-
-		public:
+			//
 			void mutation();
 			void renewal();
 			const size_t hash() const;
-			
-		public:
+			//
 			const size_t size() const;
 			const allele::value_type at( const size_t i ) const;
 		};
