@@ -35,6 +35,7 @@ test_suite* init_unit_test_suite( int argc, char* argv[] )
 	ts1->add( BOOST_TEST_CASE( &population_constructor_tests ) );
 	ts1->add( BOOST_TEST_CASE( &population_life_cycle_tests ) );
 	ts1->add( BOOST_TEST_CASE( &population_renewal_tests ) );
+	ts1->add( BOOST_TEST_CASE( &population_life_cycle_tests ) );
 
 	return ts1;
 }

@@ -64,6 +64,7 @@ namespace stsc
 			gene* const reproduction( const gene& g, details::crossover_prototype& func = details::base_crossover() ) const;
 			void mutation();
 			void renewal();
+			const size_t hash() const;
 			
 		public:
 			const size_t size() const;

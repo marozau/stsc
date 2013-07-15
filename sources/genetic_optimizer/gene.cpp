@@ -1,6 +1,7 @@
 #include "gene.h"
 
 #include "random.h"
+#include "hash.h"
 
 namespace stsc
 {
@@ -35,7 +36,11 @@ namespace stsc
 		{
 			alleles_.reserve( gt.alleles_.size() );
 			for ( genome::allele_storage::const_iterator it = gt.alleles_.begin();  it != gt.alleles_.end(); ++it )
-				alleles_.push_back( gene::allele_ptr( new allele( *( *it ) ) ) );
+			{
+				gene::allele_ptr new_allele( new allele( *( *it ) ) );
+				new_allele->reset();
+				alleles_.push_back( gene::allele_ptr( new_allele ) );
+			}
 		}
 		gene::gene()
 		{
@@ -65,6 +70,13 @@ namespace stsc
 					( *it ).reset( new allele( *( *it ) ) );
 				( *it )->reset();
 			}
+		}
+		const size_t gene::hash() const
+		{
+			stsc::genetic_optimizer::hash h;
+			for ( allele_storage::const_iterator it = alleles_.begin(); it != alleles_.end(); ++it )
+				h.calculate( ( *it )->value() );		
+			return h.get_value();
 		}
 		const size_t gene::size() const
 		{

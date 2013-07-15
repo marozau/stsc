@@ -33,6 +33,7 @@ namespace stsc
 			void population_constructor_tests();
 			void population_life_cycle_tests();
 			void population_renewal_tests();
+			void population_life_cycle_tests();
 		}
 	}
 }

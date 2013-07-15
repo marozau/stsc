@@ -5,6 +5,7 @@
 
 #include <population.h>
 #include <random.h>
+#include <limits>
 
 namespace stsc
 {
@@ -34,9 +35,9 @@ namespace stsc
 			public:
 				virtual const bool calculate( const fitness_container& f )
 				{
-					static const fitness_type max_percent = 100;
-					 fitness_container::const_iterator it = std::find( f.begin(), f.end(), max_percent );
-					 return it != f.end();
+					static const fitness_type stop_flag = -1;
+					fitness_container::const_iterator it = std::find( f.begin(), f.end(), stop_flag );
+					return it != f.end();
 				}
 			};
 			class test_fitness : public stsc::genetic_optimizer::population::fitness_function
@@ -54,8 +55,10 @@ namespace stsc
 				}
 				virtual fitness_container calculate( const gene_container& g )
 				{
-					std::vector< double > results;
-					results.reserve( g.size() );
+					static const fitness_type stop_flag = -1;
+					typedef std::vector< double > iverse_values;
+					iverse_values iv;
+					iv.reserve( g.size() );
 					double sum = 0;
 					for ( gene_container::const_iterator it = g.begin(); it != g.end(); ++it )
 					{
@@ -65,14 +68,18 @@ namespace stsc
 							result += equation_.at( i ) * ( *it )->at( i );
 						}
 						const double diff = fabs( result_ - result );
-						results.push_back( diff != 0.0 ? 1 / diff : 0.0 );
 						sum += diff;
+						iv.push_back( diff ? ( 1 / diff ) : stop_flag );
 					}
-					const double inv_sum = ( sum != 0.0 ? 1 / sum : 1 ) ;
+					
+					if ( sum == 0 )
+						return fitness_container( iv.size(), stop_flag );
+
+					const double inv_sum = 1 / sum;
 					fitness_container f;
 					f.reserve( g.size() );
-					for ( std::vector< double >::const_iterator it = results.begin(); it != results.end(); ++it )
-						f.push_back( ( float )( ( *it ) / inv_sum ) );
+					for ( iverse_values::const_iterator it = iv.begin(); it != iv.end(); ++it )
+						f.push_back( ( *it ) == stop_flag ? stop_flag : ( fitness_type )( ( *it ) / inv_sum ) );
 
 					return f;
 				}

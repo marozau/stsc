@@ -48,10 +48,7 @@ namespace stsc
 
 					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0 ) ) );
 					BOOST_CHECK_EQUAL( p->survival_size_, 1 );
-				}
-				static void life_cycle_tests()
-				{					
-				}
+				}				
 				static void renewal_tests()
 				{
 					genome gt_;
@@ -77,21 +74,50 @@ namespace stsc
 					bool res = true;
 					for ( size_t i = 0; i < p->generation_.front()->alleles_.size(); ++i )
 						if ( p->generation_.front()->alleles_.at( i )->value() != copy.at( i )->value() )
-								res = false;						
+								res = false;
 					BOOST_CHECK_EQUAL( res, false );
+				}
+				static void life_cycle_tests()
+				{
+					genome gt_;
+					fill_genome( gt_, 0.0, 100.0 );
+					fill_genome( gt_, 0.0, 200.0 );
+					fill_genome( gt_, 0.0, 300.0 );
+
+					test_fitness::equation_type e;
+					e.push_back( 1.0 );
+					e.push_back( 2.0 );
+					e.push_back( 3.0 );
+					const double result = 35.0;
+					test_fitness tf( e, result );
+					turnament_selection ts;
+					test_zero_stop tzs;
+
+					p_ptr p;
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0 ) ) );
+
+					static const size_t max_cycles = 1000000;
+					size_t i = 0;
+					bool is_stop = false;
+					do 
+					{						
+						is_stop = p->life_cycle();
+						++i;
+					} while ( !is_stop && i < max_cycles );
+					BOOST_CHECK_EQUAL( i < max_cycles, true );
 				}
 			};
 			void population_constructor_tests()
 			{
 				population_tests::constructor_tests();
+			}			
+			void population_renewal_tests()
+			{
+				population_tests::renewal_tests();
 			}
 			void population_life_cycle_tests()
 			{
 				population_tests::life_cycle_tests();
-			}
-			void population_renewal_tests()
-			{
-				population_tests::renewal_tests();
 			}
 		}
 	}
