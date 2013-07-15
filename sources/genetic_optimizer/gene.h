@@ -30,6 +30,10 @@ namespace stsc
 			{
 				virtual void operator()( const genome::allele_storage&, const genome::allele_storage&, genome::allele_storage& );
 			};
+			struct bit_crossover : public crossover_prototype
+			{
+				virtual void operator()( const genome::allele_storage&, const genome::allele_storage&, genome::allele_storage& );
+			};
 			class equal_gene : public std::binary_function< gene, gene, bool >
 			{
 			public:
@@ -58,10 +62,9 @@ namespace stsc
 
 		private:
 			explicit gene( const genome& gt );
-			explicit gene(); /// using in reproduction, but may be rewriten 
+			explicit gene( const gene& father_gene, const gene& mother_gene, details::crossover_prototype& func );
 
 		public:
-			gene* const reproduction( const gene& g, details::crossover_prototype& func = details::base_crossover() ) const;
 			void mutation();
 			void renewal();
 			const size_t hash() const;

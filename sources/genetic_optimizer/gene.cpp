@@ -16,6 +16,11 @@ namespace stsc
 				child_alleles.insert( child_alleles.end(), father_alleles.begin(), father_alleles.begin() + i );
 				child_alleles.insert( child_alleles.end(), mother_alleles.begin() + i, mother_alleles.end() );
 			}
+			void bit_crossover::operator()( const genome::allele_storage& father_alleles, const genome::allele_storage& mother_alleles, genome::allele_storage& child_alleles )
+			{
+				for( size_t i = 0; i != father_alleles.size(); ++i )
+					child_alleles.push_back( gene::allele_ptr( new allele( *father_alleles.at( i ), *mother_alleles.at( i ) ) ) );
+			}
 			const equal_gene::result_type equal_gene::operator() ( const first_argument_type& f, const second_argument_type& s )
 			{
 				if ( f.size() != s.size() )
@@ -31,7 +36,7 @@ namespace stsc
 				return eg.operator()( *f, *s );
 			}
 		}
-		// 
+		//
 		gene::gene( const genome& gt )
 		{
 			alleles_.reserve( gt.alleles_.size() );
@@ -42,18 +47,13 @@ namespace stsc
 				alleles_.push_back( gene::allele_ptr( new_allele ) );
 			}
 		}
-		gene::gene()
+		gene::gene( const gene& father_gene, const gene& mother_gene, details::crossover_prototype& func )
 		{
+			if ( father_gene.alleles_.size() != mother_gene.alleles_.size() )
+				throw std::logic_error( "gene reproduction error: genes must be equal in size" );
+			func( father_gene.alleles_, mother_gene.alleles_, alleles_ );
 		}
 		//
-		gene* const gene::reproduction( const gene& g, details::crossover_prototype& func ) const
-		{
-			if ( alleles_.size() != g.alleles_.size() )
-				throw std::logic_error( "gene reproduction error: genes size must be equal" );
-			std::auto_ptr< gene > child_gene( new gene() );
-			func( alleles_, g.alleles_, child_gene->alleles_ );
-			return child_gene.release();
-		}
 		void gene::mutation()
 		{
 			/// todo: maybe it'll be useful to add const size_t alleles_mutant_count parameter to mutate several aleles
