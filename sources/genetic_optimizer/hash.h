@@ -19,7 +19,7 @@ namespace stsc
 			template< class T >
 			void calculate( const T& t )
 			{
-				hash_value_ += boost::hash_value( t );
+				boost::hash_combine( hash_value_, t );
 			}
 		};
 	}
