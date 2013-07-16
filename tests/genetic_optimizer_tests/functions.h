@@ -46,6 +46,7 @@ namespace stsc
 			};
 			class test_zero_stop : public stsc::genetic_optimizer::stop_function_prototype
 			{
+				// todo: test on convergance!!!!
 				typedef stsc::genetic_optimizer::generation container_type;
 
 			public:

@@ -47,7 +47,10 @@ namespace stsc
 		{
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
 			{
-				it->gene->renewal();
+				do 
+				{
+					it->gene->renewal();
+				} while( !hash_storage_.insert( it->gene->hash() ).second );
 				it->fitness = 0;
 			}
 		}
@@ -62,7 +65,10 @@ namespace stsc
 				it != fitness_to_gene_map_.end() && ( survived > settings_.survival_size ); ++it )
 			{
 				const generation::value_type& g = ( *generation_.find( gene_storage( it->second, it->first ) ) );
-				g.gene->renewal();
+				do 
+				{
+					g.gene->renewal();
+				} while( !hash_storage_.insert( g.gene->hash() ).second );
 				g.fitness = 0;
 				--survived;
 			}
@@ -97,8 +103,12 @@ namespace stsc
 		}
 		void population::mutation_()
 		{
-			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
+			for ( generation::iterator it = generation_.begin(); it != generation_.end(); )
+			{
 				it->gene->mutation( settings_.mutation_rate );
+				if ( hash_storage_.insert( it->gene->hash() ).second )
+					++it;
+			}
 		}
 	}
 }
