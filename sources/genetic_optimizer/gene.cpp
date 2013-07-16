@@ -40,14 +40,14 @@ namespace stsc
 			func( father_gene.alleles_, mother_gene.alleles_, alleles_ );
 		}
 		//
-		void gene::mutation()
+		void gene::mutation( const double mutation_rate )
 		{
-			/// todo: maybe it'll be useful to add const size_t alleles_mutant_count parameter to mutate several aleles
-			// todo: all allele's bit should be checked on mutation rate in for loop
-			const size_t i = details::rand( alleles_.size() - 1 );
-			if ( !alleles_.at( i ).unique() )
-				alleles_.at( i ).reset( new allele( *alleles_.at( i ) ) );
-			alleles_.at( i )->mutation();
+			for( allele_storage::iterator it = alleles_.begin(); it != alleles_.end(); ++it )
+			{
+				if ( !( *it ).unique() )
+					( *it ).reset( new allele( *( *it ) ) );
+				( *it )->mutation( mutation_rate );
+			}
 		}
 		void gene::renewal()
 		{

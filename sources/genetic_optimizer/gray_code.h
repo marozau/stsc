@@ -38,7 +38,8 @@ namespace stsc
 				//
 				const size_t value() const;
 				void reset();
-				void flip();
+				void flip( const size_t pos );
+				const size_t bit_size() const;
 			};
 		}
 	}

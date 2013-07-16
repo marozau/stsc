@@ -81,17 +81,15 @@ namespace stsc
 			{
 				gc_ = gray_code( rand( max_ ), max_ );
 			}
-			void gray_code_generator::flip()
+			void gray_code_generator::flip( const size_t pos )
 			{
-				for (;;)
-				{
-					const size_t i = details::rand( gc_.size() - 1 );
-					gc_.flip( i );
-					if ( gc_.decode() > max_ )
-						gc_.flip( i );
-					else 
-						break;
-				} 
+				gc_.flip( pos );
+				if ( gc_.decode() > max_ )
+					gc_ = gray_code( rand( max_ ), max_ );
+			}
+			const size_t gray_code_generator::bit_size() const
+			{
+				return gc_.size();
 			}
 		}
 	}

@@ -82,7 +82,10 @@ namespace stsc
 						gray_code_generator gcg( 18 );
 						for ( size_t i = 0; i < 100000; ++i )
 						{
-							gcg.flip();
+							BOOST_CHECK_NO_THROW( gcg.flip( 0 ) );
+							BOOST_CHECK_NO_THROW( gcg.flip( 1 ) );
+							BOOST_CHECK_NO_THROW( gcg.flip( 2 ) );							
+							BOOST_CHECK_THROW( gcg.flip( gcg.bit_size() ), std::invalid_argument );
 							BOOST_CHECK_EQUAL( gcg.value() <= 18, true );
 						}
 					}

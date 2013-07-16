@@ -40,7 +40,7 @@ namespace stsc
 			allele( const allele& mother_allele, const allele& father_allele );
 			//
 			const value_type value() const;
-			void mutation();
+			void mutation( const double mutation_rate );
 			void reset();
 
 		private:

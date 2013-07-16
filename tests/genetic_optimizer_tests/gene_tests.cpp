@@ -22,6 +22,7 @@ namespace stsc
 			}
 			class gene_tests
 			{
+				static const double mutation_rate_;
 				typedef boost::shared_ptr< gene > gene_ptr;
 
 				genome gt_;
@@ -73,7 +74,7 @@ namespace stsc
 						BOOST_CHECK_EQUAL( unique < g_child->alleles_.size(), true );
 
 						for ( size_t i = 0; i < 1000; ++i )
-							BOOST_CHECK_NO_THROW( g_child->mutation() );
+							BOOST_CHECK_NO_THROW( g_child->mutation( mutation_rate_ ) );
 						unique = 0;
 						for ( gene::allele_storage::iterator it =  g_child->alleles_.begin(); it != g_child->alleles_.end(); ++it )
 							if ( ( *it ).unique() )
@@ -87,7 +88,7 @@ namespace stsc
 						gene_ptr g;
 						BOOST_CHECK_NO_THROW( g.reset( new gene( gt_ ) ) );
 						gene::allele_storage copy1( g->alleles_ );
-						BOOST_CHECK_NO_THROW( g->mutation() );
+						BOOST_CHECK_NO_THROW( g->mutation( mutation_rate_ ) );
 						size_t diffs_count = 0;
 						for ( size_t it = 0; it != g->alleles_.size(); ++it )
 							if ( g->alleles_.at( it )->value() != copy1.at( it )->value() )
@@ -95,7 +96,7 @@ namespace stsc
 						BOOST_CHECK_EQUAL( diffs_count, 1 );
 
 						gene::allele_storage copy2( g->alleles_ );
-						BOOST_CHECK_NO_THROW( g->mutation() );
+						BOOST_CHECK_NO_THROW( g->mutation( mutation_rate_ ) );
 						for ( size_t it = 0; it != g->alleles_.size(); ++it )
 							if ( g->alleles_.at( it )->value() != copy2.at( it )->value() )
 								++diffs_count;
@@ -115,6 +116,7 @@ namespace stsc
 					BOOST_CHECK_EQUAL( diffs_count > g->alleles_.size() / 2, true );
 				}
 			};
+			const double gene_tests::mutation_rate_ = 10.0;
 			void gene_constructor_tests()
 			{
 				gene_tests g_test;

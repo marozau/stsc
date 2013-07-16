@@ -49,7 +49,7 @@ namespace stsc
 			explicit gene( const genome& gt );
 			explicit gene( const gene& father_gene, const gene& mother_gene, details::crossover_prototype& func );
 			//
-			void mutation();
+			void mutation( const double mutation_rate );
 			void renewal();
 			const size_t hash() const;
 			//

@@ -24,6 +24,16 @@ namespace stsc
 	}
 	namespace genetic_optimizer
 	{
+		struct population_settings
+		{
+			size_t population_size;
+			double mutation_rate;
+			double reproduction_rate;
+			size_t survival_size;
+
+			size_t max_reproduction_iteration_count;
+			size_t global_max_reproduction_iteration_count;
+		};
 		class population : protected virtual boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::population_tests;
@@ -39,32 +49,22 @@ namespace stsc
 			typedef std::set< size_t > hash_storage;
 			
 		private:
+			population_settings settings_;
+
 			generation generation_;
-
-			const double mutation_rate_;
-			const double reproduction_rate_;
-			const size_t survival_size_;
-
+						
 			fitness_function& fitness_function_;
 			selection_function& selection_function_;
 			stop_function& stop_function_;
 
 			hash_storage hash_storage_;
 
-			const size_t max_reproduction_iteration_count_;
-			const size_t global_max_reproduction_iteration_count_;
-
 		public:
 			explicit population( const genome& genome,
 								fitness_function& ff,
 								selection_function& sel_f,
 								stop_function& stop_f,
-								const size_t size,
-								const double reproduction_rate,
-								const double mutation_rate,
-								const size_t survival_size,
-								const size_t max_reproduction_iteration_count,
-								const size_t global_max_reproduction_iteration_count );
+								const population_settings& pop_settings );
 			~population();
 			//
 			const generation& get() const;

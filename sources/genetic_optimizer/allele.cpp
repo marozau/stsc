@@ -1,5 +1,7 @@
 #include "allele.h"
 
+#include "random.h"
+
 namespace stsc
 {
 	namespace genetic_optimizer
@@ -38,9 +40,11 @@ namespace stsc
 		{
 			return value_;
 		}
-		void allele::mutation()
+		void allele::mutation( const double mutation_rate )
 		{
-			gcg_.flip();
+			for ( size_t i = 0;i < gcg_.bit_size(); ++i )
+				if ( mutation_rate  >= details::rand_percent() )
+					gcg_.flip( i );				
 			calculate_value_();
 		}
 		void allele::reset()

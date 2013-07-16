@@ -48,7 +48,9 @@ namespace stsc
 						BOOST_CHECK_NO_THROW( a.reset( new allele( 10.0, 20.0, 1.0 ) ) );
 						for ( size_t i = 0; i < 100000; ++i )
 						{
-							a->mutation();
+							BOOST_CHECK_NO_THROW( a->mutation( 100.0 ) );
+							BOOST_CHECK_NO_THROW( a->mutation( 0.0 ) );
+							BOOST_CHECK_NO_THROW( a->mutation( 50.0 ) );
 							BOOST_CHECK_EQUAL( a->value() <= 20.0, true );
 							BOOST_CHECK_EQUAL( a->value() >= 10.0, true );
 						}

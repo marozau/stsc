@@ -9,26 +9,17 @@ namespace stsc
 								fitness_function& ff,
 								selection_function& sel_f,
 								stop_function& stop_f,
-								const size_t size, 
-								const double reproduction_rate,
-								const double mutation_rate,
-								const size_t survival_size,
-								const size_t max_reproduction_iteration_count,
-								const size_t global_max_reproduction_iteration_count )
+								const population_settings& pop_settings )
 			: fitness_function_( ff )
 			, selection_function_( sel_f )
 			, stop_function_( stop_f )
-			, reproduction_rate_( reproduction_rate )
-			, mutation_rate_( mutation_rate )
-			, survival_size_( survival_size )
-			, max_reproduction_iteration_count_( max_reproduction_iteration_count )
-			, global_max_reproduction_iteration_count_( global_max_reproduction_iteration_count )
+			, settings_( pop_settings )
 		{
-			if ( size <= 1 )
+			if ( settings_.population_size <= 1 )
 				throw std::invalid_argument( "population construction error: size of population must be greater than 1" );
-			if ( survival_size_ >= size )
+			if ( settings_.survival_size >= settings_.population_size )
 				throw std::invalid_argument( "population construction error: survival size must be lower than population size" );
-			while( generation_.size() < size )
+			while( generation_.size() < settings_.population_size )
 			{
 				gene_ptr new_gene( genome.create_gene() );				
 				if ( hash_storage_.insert( new_gene->hash() ).second ) 
@@ -68,7 +59,7 @@ namespace stsc
 				fitness_to_gene_map_.insert( std::make_pair( it->second, it->first ) );
 			size_t survived = generation_.size();
 			for( fitness_to_gene_map::iterator it = fitness_to_gene_map_.begin(); 
-				it != fitness_to_gene_map_.end() && ( survived > survival_size_ ); ++it )
+				it != fitness_to_gene_map_.end() && ( survived > settings_.survival_size ); ++it )
 			{
 				generation::value_type& g = ( *generation_.find( it->second ) );				
 				g.first->renewal();
@@ -91,11 +82,11 @@ namespace stsc
 				
 				++iteration;
 				++global_iteration;
-				if ( iteration > max_reproduction_iteration_count_ )
+				if ( iteration > settings_.max_reproduction_iteration_count )
 				{
 					mating_pool = selection_function_.calculate( generation_ );
 					iteration = 0;
-					if ( global_iteration > global_max_reproduction_iteration_count_ )
+					if ( global_iteration > settings_.global_max_reproduction_iteration_count )
 					{
 						renewal_();
 						return;
@@ -107,8 +98,7 @@ namespace stsc
 		void population::mutation_()
 		{
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
-				if ( mutation_rate_ >= details::rand_percent() )
-					it->first->mutation();
+					it->first->mutation( settings_.mutation_rate );
 		}
 		namespace details
 		{

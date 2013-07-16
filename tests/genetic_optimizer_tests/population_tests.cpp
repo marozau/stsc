@@ -14,13 +14,23 @@ namespace stsc
 			class population_tests
 			{
 				typedef boost::shared_ptr< population > p_ptr;
-								
+				static population_settings test_population_settings_;
+
 				static void fill_genome( genome& gt, const allele::value_type min, const allele::value_type max )
 				{
 					gt.add_allele( new allele( min, max, 1.0 ) );
 				}
 
 			public:
+				static void initialization()
+				{
+					test_population_settings_.population_size = 5;
+					test_population_settings_.reproduction_rate = 1.0;
+					test_population_settings_.mutation_rate = 1.0;
+					test_population_settings_.survival_size = 3;
+					test_population_settings_.max_reproduction_iteration_count = 10;
+					test_population_settings_.global_max_reproduction_iteration_count = 30;
+				}
 				static void constructor_tests()
 				{
 					test_fitness::equation_type e;
@@ -38,16 +48,15 @@ namespace stsc
 					fill_genome( gt_, 0.0, 35.0 );
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1, 10, 30 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
 					BOOST_CHECK_EQUAL( p->generation_.size(), 5 );
-					BOOST_CHECK_EQUAL( p->mutation_rate_, 1.0 );
-					BOOST_CHECK_EQUAL( p->reproduction_rate_, 1.0 );
-					BOOST_CHECK_EQUAL( p->survival_size_, 1 );
-					BOOST_CHECK_EQUAL( p->max_reproduction_iteration_count_, 10 );
-					BOOST_CHECK_EQUAL( p->global_max_reproduction_iteration_count_, 30 );
+					BOOST_CHECK_EQUAL( p->settings_.mutation_rate, 1.0 );
+					BOOST_CHECK_EQUAL( p->settings_.reproduction_rate, 1.0 );
+					BOOST_CHECK_EQUAL( p->settings_.survival_size, 3 );
+					BOOST_CHECK_EQUAL( p->settings_.max_reproduction_iteration_count, 10 );
+					BOOST_CHECK_EQUAL( p->settings_.global_max_reproduction_iteration_count, 30 );
 
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1, 10, 30 ) ) );
-					BOOST_CHECK_EQUAL( p->survival_size_, 1 );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
 				}				
 				static void renewal_tests()
 				{
@@ -66,7 +75,7 @@ namespace stsc
 					test_zero_stop tzs;
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1, 10, 30 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
 					gene::allele_storage copy( p->generation_.begin()->first->alleles_ );
 
 					BOOST_CHECK_NO_THROW( p->renewal() );
@@ -94,13 +103,13 @@ namespace stsc
 					test_zero_stop tzs;
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 30.0, 2.0, 3, 10, 30 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
 
 					static const size_t max_cycles = 1000000;
 					size_t i = 0;
 					bool is_stop = false;
-					do 
-					{						
+					do
+					{
 						is_stop = p->life_cycle();
 						++i;
 					} while ( !is_stop && i < max_cycles );
@@ -111,11 +120,14 @@ namespace stsc
 						<< it->first->at( 1 ) << " "
 						<< it->first->at( 2 ) << " "
 						<< " ; rating: " << it->second << std::endl;
-					std::cout << "Iterations: " << i << std::endl;
+					std::cout << "Iterations: " << i << std::endl;					
 				}
 			};
+			population_settings population_tests::test_population_settings_ = population_settings();			
+			//
 			void population_constructor_tests()
 			{
+				population_tests::initialization();
 				population_tests::constructor_tests();
 			}			
 			void population_renewal_tests()
