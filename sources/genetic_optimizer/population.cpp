@@ -23,7 +23,7 @@ namespace stsc
 			{
 				gene_ptr new_gene( genome.create_gene() );				
 				if ( hash_storage_.insert( new_gene->hash() ).second ) 
-					generation_.insert( std::make_pair( new_gene, 0 ) );
+					generation_.insert( gene_storage( new_gene, 0 ) );
 			}
 			fitness_function_.calculate( generation_ );
 		}
@@ -31,7 +31,7 @@ namespace stsc
 		{
 		}
 		//
-		const population::generation& population::get() const
+		const generation& population::get() const
 		{
 			return generation_;
 		}
@@ -47,8 +47,8 @@ namespace stsc
 		{
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
 			{
-				it->first->renewal();
-				it->second = 0;
+				it->gene->renewal();
+				it->fitness = 0;
 			}
 		}
 		void population::renewal_()
@@ -56,14 +56,14 @@ namespace stsc
 			typedef std::map< double, gene_ptr > fitness_to_gene_map;
 			fitness_to_gene_map fitness_to_gene_map_;
 			for ( generation::const_iterator it = generation_.begin(); it != generation_.end(); ++it )
-				fitness_to_gene_map_.insert( std::make_pair( it->second, it->first ) );
+				fitness_to_gene_map_.insert( std::make_pair( it->fitness, it->gene ) );
 			size_t survived = generation_.size();
 			for( fitness_to_gene_map::iterator it = fitness_to_gene_map_.begin(); 
 				it != fitness_to_gene_map_.end() && ( survived > settings_.survival_size ); ++it )
 			{
-				generation::value_type& g = ( *generation_.find( it->second ) );				
-				g.first->renewal();
-				g.second = 0;
+				const generation::value_type& g = ( *generation_.find( gene_storage( it->second, it->first ) ) );
+				g.gene->renewal();
+				g.fitness = 0;
 				--survived;
 			}
 		}
@@ -78,7 +78,7 @@ namespace stsc
 				parants parants = details::get_parants( mating_pool );
 				gene_ptr new_gene( new gene( *parants.first, *parants.second, details::bit_crossover() ) );
 				if ( hash_storage_.insert( new_gene->hash() ).second )
-					descendant.insert( std::make_pair( new_gene, 0 ) );
+					descendant.insert( gene_storage( new_gene, 0 ) );
 				
 				++iteration;
 				++global_iteration;
@@ -98,11 +98,11 @@ namespace stsc
 		void population::mutation_()
 		{
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
-					it->first->mutation( settings_.mutation_rate );
+				it->gene->mutation( settings_.mutation_rate );
 		}
 		namespace details
 		{
-			population::parants get_parants( const population::selection_function::mating_pool& mp )
+			population::parants get_parants( const selection_function::mating_pool& mp )
 			{
 				const size_t male = details::rand( mp.size() - 1 );
 				size_t female = 0;

@@ -14,9 +14,9 @@ namespace stsc
 	{
 		namespace genetic_optimizer
 		{
-			class turnament_selection : public stsc::genetic_optimizer::population::selection_function
+			class turnament_selection : public stsc::genetic_optimizer::selection_function
 			{
-				typedef stsc::genetic_optimizer::population::fitness_function::container_type container_type;
+				typedef stsc::genetic_optimizer::generation container_type;
 
 			public:
 				virtual mating_pool calculate( const container_type& g )
@@ -38,29 +38,29 @@ namespace stsc
 							second_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
 						} while ( second_partner == first_partner );
 						if ( tg.insert( ( first_partner + 1 ) * ( second_partner + 1 ) ).second )
-							mp.push_back( g.find( base_mp.at( first_partner ).first )->second > g.find( base_mp.at( second_partner ).first )->second ?
-							base_mp.at( first_partner ).first : base_mp.at( second_partner ).first );
+							mp.push_back( base_mp.at( first_partner ).fitness > base_mp.at( second_partner ).fitness ?
+							base_mp.at( first_partner ).gene : base_mp.at( second_partner ).gene );
 					}
 					return mp;
 				}
 			};
-			class test_zero_stop : public stsc::genetic_optimizer::population::stop_function
+			class test_zero_stop : public stsc::genetic_optimizer::stop_function
 			{
-				typedef stsc::genetic_optimizer::population::fitness_function::container_type container_type;
+				typedef stsc::genetic_optimizer::generation container_type;
 
 			public:
 				virtual const bool calculate( const container_type& g )
 				{
-					static const fitness_type stop_flag = -1;
+					static const double stop_flag = -1;
 					for (  container_type::const_iterator it = g.begin(); it != g.end(); ++it )
-						if ( it->second == stop_flag )
+						if ( it->fitness == stop_flag )
 							return true;
 					return false;
 				}
 			};
-			class test_fitness : public stsc::genetic_optimizer::population::fitness_function
+			class test_fitness : public stsc::genetic_optimizer::fitness_function
 			{
-				typedef stsc::genetic_optimizer::population::fitness_function::container_type container_type;
+				typedef stsc::genetic_optimizer::generation container_type;
 
 			public:
 				typedef std::vector< double > equation_type;
@@ -75,22 +75,22 @@ namespace stsc
 				}
 				virtual void calculate( container_type& g )
 				{
-					static const fitness_type stop_flag = -1;
+					static const double stop_flag = -1;
 					double sum = 0;
 					for ( container_type::iterator it = g.begin(); it != g.end(); ++it )
 					{
 						double result = 0;
-						for ( size_t i = 0; i != ( *it ).first->size(); ++i )
+						for ( size_t i = 0; i != ( *it ).gene->size(); ++i )
 						{
-							result += equation_.at( i ) * ( *it ).first->at( i );
+							result += equation_.at( i ) * ( *it ).gene->at( i );
 						}
 						const double diff = fabs( result_ - result );
 						sum += diff;
-						it->second = diff ? ( 1 / diff ) : stop_flag;
+						it->fitness = diff ? ( 1 / diff ) : stop_flag;
 					}
 					const double inv_sum = 1 / sum;
 					for ( container_type::iterator it = g.begin(); it != g.end(); ++it )
-						it->second = ( it->second == stop_flag ) ? stop_flag : it->second / inv_sum;
+						it->fitness = ( it->fitness == stop_flag ) ? stop_flag : it->fitness / inv_sum;
 				}
 			};
 		}

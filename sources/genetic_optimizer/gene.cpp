@@ -73,5 +73,15 @@ namespace stsc
 		{
 			return alleles_.at( i )->value();
 		}
+		//
+		gene_storage::gene_storage( const gene_ptr g, const double f )
+			: gene( g )
+			, fitness( f )
+		{
+		}
+		const bool gene_storage::operator <( const gene_storage& gs ) const
+		{
+			return gene < gs.gene;
+		}
 	}
 }

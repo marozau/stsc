@@ -76,13 +76,13 @@ namespace stsc
 
 					p_ptr p;
 					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
-					gene::allele_storage copy( p->generation_.begin()->first->alleles_ );
+					gene::allele_storage copy( p->generation_.begin()->gene->alleles_ );
 
 					BOOST_CHECK_NO_THROW( p->renewal() );
 					size_t diffs = 0;
 					bool res = true;
-					for ( size_t i = 0; i < p->generation_.begin()->first->alleles_.size(); ++i )
-						if ( p->generation_.begin()->first->alleles_.at( i )->value() != copy.at( i )->value() )
+					for ( size_t i = 0; i < p->generation_.begin()->gene->alleles_.size(); ++i )
+						if ( p->generation_.begin()->gene->alleles_.at( i )->value() != copy.at( i )->value() )
 								res = false;
 					BOOST_CHECK_EQUAL( res, false );
 				}
@@ -114,12 +114,12 @@ namespace stsc
 						++i;
 					} while ( !is_stop && i < max_cycles );
 					BOOST_CHECK_EQUAL( i < max_cycles, true );
-					for( population::generation::const_iterator it = p->get().begin(); it != p->get().end(); ++it )
+					for( generation::const_iterator it = p->get().begin(); it != p->get().end(); ++it )
 						std::cout << "equation: " 
-						<< it->first->at( 0 ) << " "
-						<< it->first->at( 1 ) << " "
-						<< it->first->at( 2 ) << " "
-						<< " ; rating: " << it->second << std::endl;
+						<< it->gene->at( 0 ) << " "
+						<< it->gene->at( 1 ) << " "
+						<< it->gene->at( 2 ) << " "
+						<< " ; rating: " << it->fitness << std::endl;
 					std::cout << "Iterations: " << i << std::endl;					
 				}
 			};

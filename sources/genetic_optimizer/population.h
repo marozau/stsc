@@ -41,11 +41,6 @@ namespace stsc
 
 		public:
 			typedef std::pair< gene_ptr, gene_ptr > parants;
-			typedef std::pair< gene_ptr, double > gene_pair;
-			typedef std::map< gene_ptr, double > generation;
-			typedef fitness_function< generation > fitness_function;
-			typedef selection_function< generation > selection_function;
-			typedef stop_function< generation > stop_function;
 			typedef std::set< size_t > hash_storage;
 			
 		private:
@@ -79,7 +74,7 @@ namespace stsc
 		};
 		namespace details
 		{
-			population::parants get_parants( const population::selection_function::mating_pool& mp );
+			population::parants get_parants( const selection_function::mating_pool& mp );
 		}
 	}
 }
