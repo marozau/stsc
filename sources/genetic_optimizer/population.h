@@ -62,7 +62,7 @@ namespace stsc
 								const size_t size,
 								const double reproduction_rate,
 								const double mutation_rate,
-								const double survival_rate,
+								const size_t survival_size,
 								const size_t max_reproduction_iteration_count,
 								const size_t global_max_reproduction_iteration_count );
 			~population();
@@ -71,7 +71,9 @@ namespace stsc
 			const bool life_cycle();
 			void renewal();
 
+
 		private:
+			void renewal_();
 			void reproduction_();
 			void mutation_();
 		};

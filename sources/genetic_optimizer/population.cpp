@@ -12,7 +12,7 @@ namespace stsc
 								const size_t size, 
 								const double reproduction_rate,
 								const double mutation_rate,
-								const double survival_rate,
+								const size_t survival_size,
 								const size_t max_reproduction_iteration_count,
 								const size_t global_max_reproduction_iteration_count )
 			: fitness_function_( ff )
@@ -20,13 +20,14 @@ namespace stsc
 			, stop_function_( stop_f )
 			, reproduction_rate_( reproduction_rate )
 			, mutation_rate_( mutation_rate )
-			, survival_size_( ( size_t )( size * survival_rate / 100 ) ? ( size_t )( size * survival_rate / 100 ) : min_to_survive )
+			, survival_size_( survival_size )
 			, max_reproduction_iteration_count_( max_reproduction_iteration_count )
 			, global_max_reproduction_iteration_count_( global_max_reproduction_iteration_count )
 		{
 			if ( size <= 1 )
 				throw std::invalid_argument( "population construction error: size of population must be greater than 1" );
-
+			if ( survival_size_ >= size )
+				throw std::invalid_argument( "population construction error: survival size must be lower than population size" );
 			while( generation_.size() < size )
 			{
 				gene_ptr new_gene( genome.create_gene() );				
@@ -59,6 +60,22 @@ namespace stsc
 				it->second = 0;
 			}
 		}
+		void population::renewal_()
+		{
+			typedef std::map< double, gene_ptr > fitness_to_gene_map;
+			fitness_to_gene_map fitness_to_gene_map_;
+			for ( generation::const_iterator it = generation_.begin(); it != generation_.end(); ++it )
+				fitness_to_gene_map_.insert( std::make_pair( it->second, it->first ) );
+			size_t survived = generation_.size();
+			for( fitness_to_gene_map::iterator it = fitness_to_gene_map_.begin(); 
+				it != fitness_to_gene_map_.end() && ( survived > survival_size_ ); ++it )
+			{
+				generation::value_type& g = ( *generation_.find( it->second ) );				
+				g.first->renewal();
+				g.second = 0;
+				--survived;
+			}
+		}
 		void population::reproduction_()
 		{
 			selection_function::mating_pool mating_pool = selection_function_.calculate( generation_ ); ///todo: tests what will be faster: = or pass vector as argument reference
@@ -80,12 +97,7 @@ namespace stsc
 					iteration = 0;
 					if ( global_iteration > global_max_reproduction_iteration_count_ )
 					{
-						generation::iterator min_it = generation_.begin();
-						for( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
-							if ( it->second < min_it->second )
-								min_it = it;
-						min_it->first->renewal();
-						min_it->second = 0;
+						renewal_();
 						return;
 					}
 				}

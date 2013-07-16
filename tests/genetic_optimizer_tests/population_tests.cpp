@@ -38,15 +38,15 @@ namespace stsc
 					fill_genome( gt_, 0.0, 35.0 );
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 100.0, 10, 30 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1, 10, 30 ) ) );
 					BOOST_CHECK_EQUAL( p->generation_.size(), 5 );
 					BOOST_CHECK_EQUAL( p->mutation_rate_, 1.0 );
 					BOOST_CHECK_EQUAL( p->reproduction_rate_, 1.0 );
-					BOOST_CHECK_EQUAL( p->survival_size_, 5 );
+					BOOST_CHECK_EQUAL( p->survival_size_, 1 );
 					BOOST_CHECK_EQUAL( p->max_reproduction_iteration_count_, 10 );
 					BOOST_CHECK_EQUAL( p->global_max_reproduction_iteration_count_, 30 );
 
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0, 10, 30 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1, 10, 30 ) ) );
 					BOOST_CHECK_EQUAL( p->survival_size_, 1 );
 				}				
 				static void renewal_tests()
@@ -66,7 +66,7 @@ namespace stsc
 					test_zero_stop tzs;
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1.0, 10, 30 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 1.0, 1.0, 1, 10, 30 ) ) );
 					gene::allele_storage copy( p->generation_.begin()->first->alleles_ );
 
 					BOOST_CHECK_NO_THROW( p->renewal() );
@@ -94,7 +94,7 @@ namespace stsc
 					test_zero_stop tzs;
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 30.0, 2.0, 1.0, 10, 30 ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, 5, 30.0, 2.0, 3, 10, 30 ) ) );
 
 					static const size_t max_cycles = 1000000;
 					size_t i = 0;
@@ -110,7 +110,7 @@ namespace stsc
 						<< it->first->at( 0 ) << " "
 						<< it->first->at( 1 ) << " "
 						<< it->first->at( 2 ) << " "
-						<< " ; rating" << it->second << std::endl;
+						<< " ; rating: " << it->second << std::endl;
 					std::cout << "Iterations: " << i << std::endl;
 				}
 			};
