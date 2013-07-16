@@ -7,10 +7,10 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		class fitness_function
+		class fitness_function_prototype
 		{
 		public:
-			virtual void calculate( generation& ) = 0;
+			virtual void calculate( generation& ) const = 0;
 		};
 	}
 }

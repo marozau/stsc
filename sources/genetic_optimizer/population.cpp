@@ -6,9 +6,9 @@ namespace stsc
 	{
 		const size_t population::min_to_survive = 1;
 		population::population( const genome& genome, 
-								fitness_function& ff,
-								selection_function& sel_f,
-								stop_function& stop_f,
+								fitness_function_prototype& ff,
+								selection_function_prototype& sel_f,
+								stop_function_prototype& stop_f,
 								const population_settings& pop_settings )
 			: fitness_function_( ff )
 			, selection_function_( sel_f )
@@ -69,13 +69,13 @@ namespace stsc
 		}
 		void population::reproduction_()
 		{
-			selection_function::mating_pool mating_pool = selection_function_.calculate( generation_ ); ///todo: tests what will be faster: = or pass vector as argument reference
+			selection_function_prototype::mating_pool mating_pool = selection_function_.calculate( generation_ ); ///todo: tests what will be faster: = or pass vector as argument reference
 			generation descendant;
 			size_t iteration = 0;
 			size_t global_iteration = 0;
 			while ( descendant.size() < generation_.size() )
 			{
-				parants parants = details::get_parants( mating_pool );
+				selection_function_prototype::parants parants = get_parants( mating_pool );
 				gene_ptr new_gene( new gene( *parants.first, *parants.second, details::bit_crossover() ) );
 				if ( hash_storage_.insert( new_gene->hash() ).second )
 					descendant.insert( gene_storage( new_gene, 0 ) );
@@ -99,19 +99,6 @@ namespace stsc
 		{
 			for ( generation::iterator it = generation_.begin(); it != generation_.end(); ++it )
 				it->gene->mutation( settings_.mutation_rate );
-		}
-		namespace details
-		{
-			population::parants get_parants( const selection_function::mating_pool& mp )
-			{
-				const size_t male = details::rand( mp.size() - 1 );
-				size_t female = 0;
-				do
-				{
-					female = details::rand( mp.size() - 1 ); 
-				} while ( male == female && mp.at( male ) != mp.at( female ) );
-				return population::parants( mp.at( male ), mp.at( female ) ) ;
-			}
 		}
 	}
 }

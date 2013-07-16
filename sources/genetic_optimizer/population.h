@@ -40,7 +40,6 @@ namespace stsc
 			static const size_t min_to_survive;
 
 		public:
-			typedef std::pair< gene_ptr, gene_ptr > parants;
 			typedef std::set< size_t > hash_storage;
 			
 		private:
@@ -48,17 +47,17 @@ namespace stsc
 
 			generation generation_;
 						
-			fitness_function& fitness_function_;
-			selection_function& selection_function_;
-			stop_function& stop_function_;
+			const fitness_function_prototype& fitness_function_;
+			const selection_function_prototype& selection_function_;
+			const stop_function_prototype& stop_function_;
 
 			hash_storage hash_storage_;
 
 		public:
 			explicit population( const genome& genome,
-								fitness_function& ff,
-								selection_function& sel_f,
-								stop_function& stop_f,
+								fitness_function_prototype& ff,
+								selection_function_prototype& sel_f,
+								stop_function_prototype& stop_f,
 								const population_settings& pop_settings );
 			~population();
 			//
@@ -72,10 +71,6 @@ namespace stsc
 			void reproduction_();
 			void mutation_();
 		};
-		namespace details
-		{
-			population::parants get_parants( const selection_function::mating_pool& mp );
-		}
 	}
 }
 

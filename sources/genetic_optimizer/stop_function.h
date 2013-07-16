@@ -7,10 +7,10 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		class stop_function
+		class stop_function_prototype
 		{
 		public:
-			virtual const bool calculate( const generation& ) = 0;
+			virtual const bool calculate( const generation& ) const = 0;
 		};
 	}
 }

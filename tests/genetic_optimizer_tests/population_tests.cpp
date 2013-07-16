@@ -24,7 +24,7 @@ namespace stsc
 			public:
 				static void initialization()
 				{
-					test_population_settings_.population_size = 5;
+					test_population_settings_.population_size = 10;
 					test_population_settings_.reproduction_rate = 1.0;
 					test_population_settings_.mutation_rate = 1.0;
 					test_population_settings_.survival_size = 3;
@@ -48,15 +48,15 @@ namespace stsc
 					fill_genome( gt_, 0.0, 35.0 );
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
-					BOOST_CHECK_EQUAL( p->generation_.size(), 5 );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
+					BOOST_CHECK_EQUAL( p->generation_.size(), 10 );
 					BOOST_CHECK_EQUAL( p->settings_.mutation_rate, 1.0 );
 					BOOST_CHECK_EQUAL( p->settings_.reproduction_rate, 1.0 );
 					BOOST_CHECK_EQUAL( p->settings_.survival_size, 3 );
 					BOOST_CHECK_EQUAL( p->settings_.max_reproduction_iteration_count, 10 );
 					BOOST_CHECK_EQUAL( p->settings_.global_max_reproduction_iteration_count, 30 );
 
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
 				}				
 				static void renewal_tests()
 				{
@@ -75,7 +75,7 @@ namespace stsc
 					test_zero_stop tzs;
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
 					gene::allele_storage copy( p->generation_.begin()->gene->alleles_ );
 
 					BOOST_CHECK_NO_THROW( p->renewal() );
@@ -103,7 +103,7 @@ namespace stsc
 					test_zero_stop tzs;
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, ts, tzs, test_population_settings_ ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
 
 					static const size_t max_cycles = 1000000;
 					size_t i = 0;

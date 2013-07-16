@@ -14,12 +14,12 @@ namespace stsc
 	{
 		namespace genetic_optimizer
 		{
-			class turnament_selection : public stsc::genetic_optimizer::selection_function
+			class turnament_selection : public stsc::genetic_optimizer::selection_function_prototype
 			{
 				typedef stsc::genetic_optimizer::generation container_type;
 
 			public:
-				virtual mating_pool calculate( const container_type& g )
+				virtual mating_pool calculate( const container_type& g ) const
 				{
 					typedef std::set< size_t > turnament_grid;
 					turnament_grid tg;
@@ -44,12 +44,12 @@ namespace stsc
 					return mp;
 				}
 			};
-			class test_zero_stop : public stsc::genetic_optimizer::stop_function
+			class test_zero_stop : public stsc::genetic_optimizer::stop_function_prototype
 			{
 				typedef stsc::genetic_optimizer::generation container_type;
 
 			public:
-				virtual const bool calculate( const container_type& g )
+				virtual const bool calculate( const container_type& g ) const
 				{
 					static const double stop_flag = -1;
 					for (  container_type::const_iterator it = g.begin(); it != g.end(); ++it )
@@ -58,7 +58,7 @@ namespace stsc
 					return false;
 				}
 			};
-			class test_fitness : public stsc::genetic_optimizer::fitness_function
+			class test_fitness : public stsc::genetic_optimizer::fitness_function_prototype
 			{
 				typedef stsc::genetic_optimizer::generation container_type;
 
@@ -73,7 +73,7 @@ namespace stsc
 					, result_( result )
 				{
 				}
-				virtual void calculate( container_type& g )
+				virtual void calculate( container_type& g ) const
 				{
 					static const double stop_flag = -1;
 					double sum = 0;
