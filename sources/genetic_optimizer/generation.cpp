@@ -14,46 +14,23 @@ namespace stsc
 			return gene < gs.gene;
 		}
 		//
-		std::pair< generation::iterator, bool > generation::insert( const value_type& val )
+		const bool generation::insert( const key_type& key, const mapped_type& value )
 		{
-			std::pair< base_map::iterator, bool > res = base_map::insert( val );
-			if ( res.second )
-				inner_map_.insert( inner_pair( res.first->fitness, res.first->gene ) );
-			return res;
-		}
-		void generation::erase( iterator position )
-		{
-			std::pair< inner_iterator, inner_iterator > res = inner_map_.equal_range( position->fitness );
-			for( inner_iterator it = res.first; it != res.second; ++it )
+			if ( hash_storage_.insert( value->hash() ).second )
 			{
-				if ( it->second == position->gene )
-				{
-					inner_map_.erase( it );
-					break;
-				}
+				iterator it = inner_map_.insert( value_type( key, value ) );
+				return true;
 			}
-			base_map::erase( position );
+			return false;
 		}
-		generation::size_type generation::erase( const value_type& val )
+		void generation::swap( generation& g )
 		{
-			iterator it = base_map::find( val );
-			if ( it == base_map::end() )
-				return size_type( 0 );
-			erase( it );
-			return size_type( 1 );
-		}
-		generation::iterator generation::find( const value_type& val ) const
-		{
-			return base_map::find( val );
+			inner_map_.swap( g.inner_map_ );
+			hash_storage_.insert( g.hash_storage_.begin(), g.hash_storage_.end() );
 		}
 		generation::size_type generation::size() const
 		{
-			return base_map::size();
-		}
-		void generation::clear()
-		{
-			base_map::clear();
-			inner_map_.clear();
+			return inner_map_.size();
 		}
 	}
 }

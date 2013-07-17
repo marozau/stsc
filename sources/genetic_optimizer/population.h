@@ -35,7 +35,6 @@ namespace stsc
 		class population : protected virtual boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::population_tests;
-			static const size_t min_to_survive;
 
 		public:
 			typedef std::set< size_t > hash_storage;

@@ -14,34 +14,54 @@ namespace stsc
 	{
 		namespace genetic_optimizer
 		{
+			namespace details
+			{
+				class turnament_selection_helper : public stsc::genetic_optimizer::generation_functor
+				{
+					typedef stsc::genetic_optimizer::selection_function_prototype selector;
+					std::vector<  stsc::genetic_optimizer::generation::value_type > genes;
+
+				public:
+					explicit turnament_selection_helper( const size_t size )
+					{
+						genes.reserve( size );
+					}
+					virtual void operator () ( const  stsc::genetic_optimizer::generation::fitness_type& f,  stsc::genetic_optimizer::generation::gene_type& g )
+					{
+						genes.push_back(  stsc::genetic_optimizer::generation::value_type( f, g ) );
+					}
+					selector::mating_pool generate( const size_t size )
+					{
+						typedef std::set< size_t > turnament_grid;
+						turnament_grid tg;
+						selector::mating_pool mp;
+						mp.reserve( size );
+						while ( mp.size() < size )
+						{
+							size_t first_partner = stsc::genetic_optimizer::details::rand( size - 1 );
+							size_t second_partner = 0;
+							do
+							{
+								second_partner = stsc::genetic_optimizer::details::rand( size - 1 );
+							} while ( second_partner == first_partner );
+							if ( tg.insert( ( first_partner + 1 ) * ( second_partner + 1 ) ).second )
+								mp.push_back( genes.at( first_partner ).first > genes.at( second_partner ).first ?
+								genes.at( first_partner ).second : genes.at( second_partner ).second );
+						}
+						return mp;
+					}
+				};
+			}
 			class turnament_selection : public stsc::genetic_optimizer::selection_function_prototype
 			{
 				typedef stsc::genetic_optimizer::generation container_type;
 
 			public:
-				virtual mating_pool calculate( const container_type& g ) const
+				virtual mating_pool calculate( const stsc::genetic_optimizer::generation& g ) const
 				{
-					typedef std::set< size_t > turnament_grid;
-					turnament_grid tg;
-					std::vector< container_type::value_type > base_mp;
-					for( container_type::const_iterator it = g.begin(); it != g.end(); ++it )
-						base_mp.push_back( *it );
-
-					mating_pool mp;
-					mp.reserve( g.size() );
-					while ( mp.size() < g.size() )
-					{
-						size_t first_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
-						size_t second_partner = 0;
-						do
-						{
-							second_partner = stsc::genetic_optimizer::details::rand( g.size() - 1 );
-						} while ( second_partner == first_partner );
-						if ( tg.insert( ( first_partner + 1 ) * ( second_partner + 1 ) ).second )
-							mp.push_back( base_mp.at( first_partner ).fitness > base_mp.at( second_partner ).fitness ?
-							base_mp.at( first_partner ).gene : base_mp.at( second_partner ).gene );
-					}
-					return mp;
+					details::turnament_selection_helper helper( g.size() );
+					g.for_each( helper, g.size() );
+					return helper.generate( g.size() );
 				}
 			};
 			class test_zero_stop : public stsc::genetic_optimizer::stop_function_prototype
@@ -52,10 +72,10 @@ namespace stsc
 			public:
 				virtual const bool calculate( const container_type& g ) const
 				{
-					static const double stop_flag = -1;
+					/*static const double stop_flag = -1;
 					for (  container_type::const_iterator it = g.begin(); it != g.end(); ++it )
 						if ( it->fitness == stop_flag )
-							return true;
+							return true;*/
 					return false;
 				}
 			};
@@ -76,7 +96,7 @@ namespace stsc
 				}
 				virtual void calculate( container_type& g ) const
 				{
-					static const double stop_flag = -1;
+					/*static const double stop_flag = -1;
 					double sum = 0;
 					for ( container_type::iterator it = g.begin(); it != g.end(); ++it )
 					{
@@ -91,7 +111,7 @@ namespace stsc
 					}
 					const double inv_sum = 1 / sum;
 					for ( container_type::iterator it = g.begin(); it != g.end(); ++it )
-						it->fitness = ( it->fitness == stop_flag ) ? stop_flag : it->fitness / inv_sum;
+						it->fitness = ( it->fitness == stop_flag ) ? stop_flag : it->fitness / inv_sum;*/
 				}
 			};
 		}

@@ -15,58 +15,78 @@ namespace stsc
 			typedef gene_ptr gene_type;
 			const gene_type gene;
 			typedef double fitness_type;
-			mutable fitness_type fitness;
+			fitness_type fitness;
 
 		public:
 			explicit gene_storage( const gene_ptr g, const double f );
 			const bool operator <( const gene_storage& gs ) const;
 		};
-		class generation : public std::set< gene_storage >
+		class generation_functor;
+		class generation
 		{
 		public:
-			typedef std::set< gene_storage > base_map;
-			typedef std::pair< gene_storage::fitness_type, gene_storage::gene_type > inner_pair;
-			typedef std::multimap< gene_storage::fitness_type, gene_storage::gene_type > inner_map;
-			typedef inner_map::const_iterator inner_iterator;
+			typedef gene_ptr gene_type;
+			typedef double fitness_type;
+						
+			typedef std::multimap< fitness_type, gene_type > inner_map;
+			typedef inner_map::iterator iterator;
+			typedef inner_map::const_iterator const_iterator;
+			typedef inner_map::key_type key_type;
+			typedef inner_map::mapped_type mapped_type;
+			typedef inner_map::value_type value_type;
+			typedef inner_map::reference reference;
+			typedef inner_map::const_reference const_reference;
+			typedef inner_map::size_type size_type;
 
-			typedef base_map::key_type key_type;
-			typedef base_map::value_type value_type;
-			typedef base_map::reference reference;
-			typedef base_map::const_reference const_reference;
-			typedef base_map::pointer pointer;
-			typedef base_map::const_pointer const_pointer;
-			typedef base_map::iterator iterator;
-			typedef base_map::const_iterator const_iterator;
-			typedef base_map::size_type size_type;
+			typedef std::set< size_t > hash_storage;
 
 		private:
 			inner_map inner_map_;
+			hash_storage hash_storage_;
 
 		public:
-			std::pair< iterator, bool > insert( const value_type& val );
-			//
-			void erase( iterator position );
-			size_type erase( const value_type& val );
-			//
-			iterator find( const value_type& val ) const;
-			//
+			const bool insert( const key_type& key, const mapped_type& value );
+			template< class functor >
+			void for_each( functor& f, const size_t count, const bool mandatory_change = false );
+			template< class functor >
+			void for_each( functor& f, const size_t count ) const;
+			void swap( generation& g );
 			size_type size() const;
-			//
-			void clear();
-			//
-			template< class functor >
-			void for_each( functor& f )
+		};
+		template< class functor >
+		void generation::for_each( functor& f, const size_t count, const bool mandatory_change )
+		{
+			inner_map temp_map;
+			bool changed = false;
+			size_t counter = 1;
+			for( iterator it = inner_map_.begin(); it != inner_map_.end() && counter < count; ++counter )
 			{
-				for( inner_iterator it = inner_map_.begin(); it != inner_map_.end(); ++it )
-					f( base_map::find( it->second ) );
+				do 
+				{
+					f( it->second );
+					changed = hash_storage_.insert( it->second->hash() ).second;
+				} while ( !changed && mandatory_change );
+				if ( it->first != 0 && changed )
+				{
+					temp_map.insert( value_type( 0, it->second ) );
+					inner_map_.erase( it++ );
+				}
+				else
+					++it;
 			}
-			template< class functor >
-			void for_each( functor& f, const size_t count )
-			{
-				size_t counter = 1;
-				for( inner_iterator it = inner_map_.begin(); it != inner_map_.end() && counter < count; ++it, ++counter )
-					f( base_map::find( it->second ) );
-			}
+		}
+		template< class functor >
+		void generation::for_each( functor& f, const size_t count ) const
+		{
+			size_t counter = 1;
+			for( const_iterator it = inner_map_.begin(); it != inner_map_.end() && counter < count; ++counter )
+					f( it->first, it->second );
+		}
+		//
+		class generation_functor
+		{
+		public:
+			virtual void operator () ( const generation::fitness_type&, generation::gene_type& ) = 0;
 		};
 	}
 }

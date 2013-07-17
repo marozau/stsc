@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "gene.h"
+#include "generation.h"
 
 namespace stsc
 {
@@ -14,6 +14,7 @@ namespace stsc
 		public:
 			typedef std::pair< gene_ptr, gene_ptr > parants;
 			typedef std::vector< gene_ptr > mating_pool;
+
 		public:
 			virtual mating_pool calculate( const generation& ) const = 0;
 		};
