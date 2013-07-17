@@ -26,9 +26,9 @@ namespace stsc
 					{
 						genes.reserve( size );
 					}
-					virtual void operator () ( const  stsc::genetic_optimizer::generation::fitness_type& f,  stsc::genetic_optimizer::generation::gene_type& g )
+					virtual void operator () ( const stsc::genetic_optimizer::gene_storage& g )
 					{
-						genes.push_back(  stsc::genetic_optimizer::generation::value_type( f, g ) );
+						genes.push_back( g );
 					}
 					selector::mating_pool generate( const size_t size )
 					{
@@ -45,11 +45,33 @@ namespace stsc
 								second_partner = stsc::genetic_optimizer::details::rand( size - 1 );
 							} while ( second_partner == first_partner );
 							if ( tg.insert( ( first_partner + 1 ) * ( second_partner + 1 ) ).second )
-								mp.push_back( genes.at( first_partner ).first > genes.at( second_partner ).first ?
-								genes.at( first_partner ).second : genes.at( second_partner ).second );
+								mp.push_back( genes.at( first_partner ).fitness > genes.at( second_partner ).fitness ?
+								genes.at( first_partner ).gene: genes.at( second_partner ).gene );
 						}
 						return mp;
 					}
+				};
+				class zero_test_helper : public stsc::genetic_optimizer::generation_functor
+				{
+					static const double stop_flag = -1;
+					bool result_;
+				public:
+					explicit zero_test_helper()
+						: result_( false )
+					{
+					}
+					virtual void operator () ( const stsc::genetic_optimizer::gene_storage& g )
+					{
+						if ( g.fitness == stop_flag )
+							result_ = true;
+					}
+					const bool result() const
+					{
+						return result_;
+					}
+				};
+				class test_fitness_helper : public stsc::genetic_optimizer::generation_functor
+				{
 				};
 			}
 			class turnament_selection : public stsc::genetic_optimizer::selection_function_prototype
@@ -72,11 +94,9 @@ namespace stsc
 			public:
 				virtual const bool calculate( const container_type& g ) const
 				{
-					/*static const double stop_flag = -1;
-					for (  container_type::const_iterator it = g.begin(); it != g.end(); ++it )
-						if ( it->fitness == stop_flag )
-							return true;*/
-					return false;
+					details::zero_test_helper helper;
+					g.for_each( helper, g.size() );
+					return helper.result();
 				}
 			};
 			class test_fitness : public stsc::genetic_optimizer::fitness_function_prototype

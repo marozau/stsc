@@ -4,17 +4,17 @@ namespace stsc
 {
 	namespace genetic_optimizer
 	{
-		gene_storage::gene_storage( const gene_ptr g, const double f )
+		gene_storage::gene_storage( const double f, const gene_ptr g )
 			: gene( g )
 			, fitness( f )
 		{
 		}
 		const bool gene_storage::operator <( const gene_storage& gs ) const
 		{
-			return gene < gs.gene;
+			return fitness < gs.fitness;
 		}
 		//
-		const bool generation::insert( const key_type& key, const mapped_type& value )
+		const bool generation::insert( const fitness_type& key, const gene_type& value )
 		{
 			if ( hash_storage_.insert( value->hash() ).second )
 			{
