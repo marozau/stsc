@@ -2,16 +2,14 @@
 #define _STSC_GENETIC_OPTIMIZER_POPULATION_H_
 
 #include <vector>
-#include <set>
-#include <map>
 
 #include <boost/noncopyable.hpp>
 
-#include <gene.h>
-#include <random.h>
-#include <fitness_function.h>
-#include <selection_function.h>
-#include <stop_function.h>
+#include "generation.h"
+#include "random.h"
+#include "fitness_function.h"
+#include "selection_function.h"
+#include "stop_function.h"
 
 namespace stsc
 {

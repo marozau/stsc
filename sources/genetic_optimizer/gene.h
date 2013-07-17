@@ -1,8 +1,7 @@
 #ifndef _STSC_GENETIC_OPTIMIZER_GENE_H_ 
 #define _STSC_GENETIC_OPTIMIZER_GENE_H_
 
-#include <genome.h>
-#include <set>
+#include "genome.h"
 
 namespace stsc
 {
@@ -59,17 +58,6 @@ namespace stsc
 		};
 		//
 		typedef boost::shared_ptr< gene > gene_ptr;
-		struct gene_storage
-		{
-			const gene_ptr gene;
-			typedef double fitness_type;
-			mutable fitness_type fitness;
-
-		public:
-			explicit gene_storage( const gene_ptr g, const double f );
-			const bool operator <( const gene_storage& gs ) const;
-		};
-		typedef std::set< gene_storage > generation;
 	}
 }
 
