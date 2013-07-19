@@ -18,7 +18,7 @@ namespace stsc
 	}
 	namespace genetic_optimizer
 	{
-		class allele : protected virtual boost::noncopyable
+		class allele
 		{
 			friend class stsc::tests_::genetic_optimizer::allele_tests;
 			friend const allele combine( const allele& mother_allele, const allele& father_allele, const size_t crossing_point );

@@ -1,12 +1,11 @@
 #ifndef _STSC_GENETIC_OPTIMIZER_STOP_FUNCTION_H_
 #define _STSC_GENETIC_OPTIMIZER_STOP_FUNCTION_H_
 
-#include "gene.h"
-
 namespace stsc
 {
 	namespace genetic_optimizer
 	{
+		class generation;
 		class stop_function_prototype
 		{
 		public:

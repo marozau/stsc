@@ -10,7 +10,6 @@ namespace stsc
 		{
 			const size_t rand( const size_t max )
 			{
-				///todo: maybe it'll be more useful to use singleton rand
 				static bool is_seeded = false;
 				if ( !is_seeded )
 				{

@@ -2,7 +2,6 @@
 #define _STSC_GENETIC_OPTIMIZER_GENERATION_H_
 
 #include <set>
-#include <map>
 
 #include "gene.h"
 
@@ -25,7 +24,6 @@ namespace stsc
 			explicit gene_storage( const double f, const gene_ptr g );
 			const bool operator <( const gene_storage& gs ) const;
 		};
-		class generation_functor;
 		class generation
 		{
 		public:

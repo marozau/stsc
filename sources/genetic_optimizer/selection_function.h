@@ -12,8 +12,8 @@ namespace stsc
 		class selection_function_prototype
 		{
 		public:
-			typedef std::pair< gene_ptr, gene_ptr > parants;
-			typedef std::vector< gene_ptr > mating_pool;
+			typedef std::pair< generation::gene_type, generation::gene_type > parants;
+			typedef std::vector< generation::gene_type > mating_pool;
 
 		public:
 			virtual mating_pool calculate( const generation& ) const = 0;

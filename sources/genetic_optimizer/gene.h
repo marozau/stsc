@@ -31,7 +31,6 @@ namespace stsc
 			};
 		}
 		//
-		class population;
 		class gene : boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::gene_tests;
