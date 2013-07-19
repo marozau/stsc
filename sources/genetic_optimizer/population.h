@@ -7,9 +7,6 @@
 
 #include "generation.h"
 #include "random.h"
-#include "fitness_function.h"
-#include "selection_function.h"
-#include "stop_function.h"
 
 namespace stsc
 {
@@ -32,6 +29,10 @@ namespace stsc
 			size_t max_reproduction_iteration_count;
 			size_t global_max_reproduction_iteration_count;
 		};
+
+		class fitness_function_prototype;
+		class selection_function_prototype;
+		class stop_function_prototype;
 		class population : protected virtual boost::noncopyable
 		{
 			friend class stsc::tests_::genetic_optimizer::population_tests;

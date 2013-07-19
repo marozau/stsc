@@ -1,5 +1,9 @@
 #include "population.h"
 
+#include "fitness_function_prototype.h"
+#include "selection_function_prototype.h"
+#include "stop_function_prototype.h"
+
 namespace stsc
 {
 	namespace genetic_optimizer

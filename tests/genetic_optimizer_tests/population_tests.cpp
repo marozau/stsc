@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <population.h>
+#include <sample_functions/tournament_selection.h>
 #include "functions.h"
 
 using namespace stsc::genetic_optimizer;
@@ -92,7 +93,7 @@ namespace stsc
 					e.push_back( 3.0 );
 					const double result = 35.0;
 					test_fitness tf( e, result );
-					turnament_selection ts;
+					sample_functions::turnament_selection ts;
 					test_zero_stop tzs;
 
 					genome gt_;
@@ -101,7 +102,7 @@ namespace stsc
 					fill_genome( gt_, 0.0, 35.0 );
 
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, sample_functions::turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
 					BOOST_CHECK_EQUAL( p->generation_.size(), 10 );
 					BOOST_CHECK_EQUAL( p->settings_.mutation_rate, 1.0 );
 					BOOST_CHECK_EQUAL( p->settings_.reproduction_rate, 1.0 );
@@ -109,7 +110,7 @@ namespace stsc
 					BOOST_CHECK_EQUAL( p->settings_.max_reproduction_iteration_count, 10 );
 					BOOST_CHECK_EQUAL( p->settings_.global_max_reproduction_iteration_count, 30 );
 
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, sample_functions::turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
 				}				
 				static void renewal_tests()
 				{
@@ -124,11 +125,9 @@ namespace stsc
 					e.push_back( 3.0 );
 					const double result = 35.0;
 					test_fitness tf( e, result );
-					turnament_selection ts;
-					test_zero_stop tzs;
-
+					
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, sample_functions::turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
 					details::renewal_helper helper;
 					p->generation_.for_each( helper, p->generation_.size() );
 					helper.set_filled();
@@ -149,11 +148,9 @@ namespace stsc
 					e.push_back( 3.0 );
 					const double result = 35.0;
 					test_fitness tf( e, result );
-					turnament_selection ts;
-					test_zero_stop tzs;
-
+					
 					p_ptr p;
-					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
+					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, sample_functions::turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
 
 					static const size_t max_cycles = 1000000;
 					size_t i = 0;

@@ -20,4 +20,8 @@ find_package( system_utilities ${SEARCH_PARAMETERS} COMPONENTS
 	timer
 )
 
+add_source_list( ${module_name} sample_functions "sample_functions/*.cpp" )
+add_source_list( ${module_name} sample_functions "sample_functions/*.h" )
+
+
 compile_project( ${module_name} "*.cpp" "*.h" STATIC libraries ${module_name} common system_utilities Boost )
