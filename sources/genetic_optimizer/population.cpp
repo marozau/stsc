@@ -21,7 +21,7 @@ namespace stsc
 			while( generation_.size() < settings_.population_size )
 			{
 				gene_ptr new_gene( genome.create_gene() );
-				generation_.insert( 0, new_gene );
+				generation_.insert( gene_storage::no_fitness, new_gene );
 			}
 			fitness_function_.calculate( generation_ );
 		}
@@ -59,7 +59,7 @@ namespace stsc
 			{
 				selection_function_prototype::parants parants = get_parants( mating_pool );
 				gene_ptr new_gene( new gene( *parants.first, *parants.second, details::bit_crossover() ) );
-				descendant.insert( 0, new_gene );
+				descendant.insert( gene_storage::no_fitness, new_gene );
 				
 				++iteration;
 				++global_iteration;

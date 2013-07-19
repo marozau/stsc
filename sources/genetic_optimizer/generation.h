@@ -13,11 +13,13 @@ namespace stsc
 	namespace genetic_optimizer
 	{
 		struct gene_storage
-		{
+		{			
 			typedef gene_ptr gene_type;
 			const gene_type gene;
 			typedef double fitness_type;
 			fitness_type fitness;
+
+			static const fitness_type no_fitness;
 
 		public:
 			explicit gene_storage( const double f, const gene_ptr g );
@@ -76,7 +78,7 @@ namespace stsc
 					is_repeat = ( ( old_hash != new_hash ) && ( is_new_hash == false ) ) || ( !is_new_hash && mandatory_change );
 					is_changed ^= is_new_hash;
 				} while ( is_repeat );
-				if ( it->fitness != 0 && is_changed )
+				if ( it->fitness != gene_storage::no_fitness && is_changed )
 				{
 					temp_map.insert( value_type( 0, it->gene ) );
 					inner_map_.erase( it++ );

@@ -1,9 +1,13 @@
 #include "generation.h"
 
+#include <limits>
+
 namespace stsc
 {
 	namespace genetic_optimizer
 	{
+		//static const gene_storage::fitness_type no_fitness = std::numeric_limits< gene_storage::fitness_type >::max();
+		const gene_storage::fitness_type gene_storage::no_fitness = 0;
 		gene_storage::gene_storage( const double f, const gene_ptr g )
 			: gene( g )
 			, fitness( f )
