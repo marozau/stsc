@@ -16,7 +16,7 @@ namespace stsc
 		{
 			namespace details
 			{
-				class turnament_selection_helper : public stsc::genetic_optimizer::generation_functor
+				class turnament_selection_helper : public stsc::genetic_optimizer::generation_functor_const
 				{
 					typedef stsc::genetic_optimizer::selection_function_prototype selector;
 					std::vector<  stsc::genetic_optimizer::generation::value_type > genes;
@@ -51,10 +51,14 @@ namespace stsc
 						return mp;
 					}
 				};
-				class zero_test_helper : public stsc::genetic_optimizer::generation_functor
+				class zero_test_helper : public stsc::genetic_optimizer::generation_functor_const
 				{
-					static const double stop_flag = -1;
+				public:
+					static const stsc::genetic_optimizer::gene_storage::fitness_type stop_flag;
+
+				private:
 					bool result_;
+
 				public:
 					explicit zero_test_helper()
 						: result_( false )
@@ -70,8 +74,52 @@ namespace stsc
 						return result_;
 					}
 				};
-				class test_fitness_helper : public stsc::genetic_optimizer::generation_functor
+				const stsc::genetic_optimizer::gene_storage::fitness_type zero_test_helper::stop_flag = -1;
+				class test_fitness_helper : public stsc::genetic_optimizer::generation_functor_const
 				{
+				public:
+					typedef std::vector< stsc::genetic_optimizer::gene_storage > storage;
+
+				private:					
+					storage storage_;
+
+					stsc::genetic_optimizer::generation g_;
+
+					typedef std::vector< double > equation_type;
+					const equation_type& equation_;
+					const double& result_;
+
+					double sum_;
+					
+				public:
+					test_fitness_helper( const equation_type& equation, const double& result )
+						: equation_( equation )
+						, result_( result ) 
+						, sum_( 0.0 )
+					{
+					}
+					virtual void operator () ( const stsc::genetic_optimizer::gene_storage& g )
+					{
+						storage_.push_back( g );
+						double result = 0;
+						for ( size_t i = 0; i != g.gene->size(); ++i )
+						{
+							result += equation_.at( i ) * g.gene->at( i );
+						}
+						const double diff = fabs( result_ - result );
+						sum_ += diff;
+						storage_.back().fitness = diff ? ( 1 / diff ) : zero_test_helper::stop_flag;
+					}
+					void new_generation( stsc::genetic_optimizer::generation& g )
+					{
+						const double invert_sum = ( sum_ != 0 ) ? 1 / sum_ : 1;				
+						for ( storage::iterator it = storage_.begin(); it != storage_.end(); ++it )
+						{
+							const stsc::genetic_optimizer::gene_storage::fitness_type new_fitness = 
+								( it->fitness == zero_test_helper::stop_flag ) ? zero_test_helper::stop_flag : it->fitness / invert_sum;
+							g.insert( new_fitness, it->gene );
+						}
+					}
 				};
 			}
 			class turnament_selection : public stsc::genetic_optimizer::selection_function_prototype
@@ -114,24 +162,16 @@ namespace stsc
 					, result_( result )
 				{
 				}
-				virtual void calculate( container_type& g ) const
+				virtual void calculate( const container_type& g ) const
 				{
-					/*static const double stop_flag = -1;
-					double sum = 0;
-					for ( container_type::iterator it = g.begin(); it != g.end(); ++it )
-					{
-						double result = 0;
-						for ( size_t i = 0; i != ( *it ).gene->size(); ++i )
-						{
-							result += equation_.at( i ) * ( *it ).gene->at( i );
-						}
-						const double diff = fabs( result_ - result );
-						sum += diff;
-						it->fitness = diff ? ( 1 / diff ) : stop_flag;
-					}
-					const double inv_sum = 1 / sum;
-					for ( container_type::iterator it = g.begin(); it != g.end(); ++it )
-						it->fitness = ( it->fitness == stop_flag ) ? stop_flag : it->fitness / inv_sum;*/
+					details::test_fitness_helper helper( equation_, result_ );
+					g.for_each( helper, g.size() );
+					const size_t old_size = g.size();
+					stsc::genetic_optimizer::generation new_generation;
+					helper.new_generation( new_generation );
+					const_cast< container_type& >( g ).swap( new_generation );
+					if ( g.size() != old_size )
+						throw std::logic_error( "generation fitness update error: new generation size differs from origin size" );
 				}
 			};
 		}

@@ -36,9 +36,6 @@ namespace stsc
 		{
 			friend class stsc::tests_::genetic_optimizer::population_tests;
 
-		public:
-			typedef std::set< size_t > hash_storage;
-			
 		private:
 			population_settings settings_;
 
@@ -47,8 +44,6 @@ namespace stsc
 			const fitness_function_prototype& fitness_function_;
 			const selection_function_prototype& selection_function_;
 			const stop_function_prototype& stop_function_;
-
-			hash_storage hash_storage_;
 
 		public:
 			explicit population( const genome& genome,

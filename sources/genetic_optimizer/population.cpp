@@ -20,9 +20,8 @@ namespace stsc
 				throw std::invalid_argument( "population construction error: survival size must be lower than population size" );
 			while( generation_.size() < settings_.population_size )
 			{
-				gene_ptr new_gene( genome.create_gene() );				
-				if ( hash_storage_.insert( new_gene->hash() ).second ) 
-					generation_.insert( 0, new_gene );
+				gene_ptr new_gene( genome.create_gene() );
+				generation_.insert( 0, new_gene );
 			}
 			fitness_function_.calculate( generation_ );
 		}
@@ -44,24 +43,23 @@ namespace stsc
 		}
 		void population::renewal()
 		{
-			generation_.for_each( std::mem_fun( &gene::renewal ), generation().size(), true );
+			generation_.for_each_gene( std::mem_fun( &gene::renewal ), generation_.size(), true );
 		}
 		void population::renewal_()
 		{
-			generation_.for_each( std::mem_fun( &gene::renewal ), generation_.size() - settings_.survival_size, true );
+			generation_.for_each_gene( std::mem_fun( &gene::renewal ), generation_.size() - settings_.survival_size, true );
 		}
 		void population::reproduction_()
 		{
-			selection_function_prototype::mating_pool mating_pool = selection_function_.calculate( generation_ ); ///todo: tests what will be faster: = or pass vector as argument reference
-			generation descendant;
+			selection_function_prototype::mating_pool mating_pool = selection_function_.calculate( generation_ ); 
+			generation descendant( generation_ );
 			size_t iteration = 0;
 			size_t global_iteration = 0;
 			while ( descendant.size() < generation_.size() )
 			{
 				selection_function_prototype::parants parants = get_parants( mating_pool );
 				gene_ptr new_gene( new gene( *parants.first, *parants.second, details::bit_crossover() ) );
-				if ( hash_storage_.insert( new_gene->hash() ).second )
-					descendant.insert( 0, new_gene );
+				descendant.insert( 0, new_gene );
 				
 				++iteration;
 				++global_iteration;
@@ -80,7 +78,7 @@ namespace stsc
 		}
 		void population::mutation_()
 		{
-			generation_.for_each( std::bind2nd( std::mem_fun( &gene::mutation ), settings_.mutation_rate ), generation_.size(), false );
+			generation_.for_each_gene( std::bind2nd( std::mem_fun( &gene::mutation ), settings_.mutation_rate ), generation_.size(), false );
 		}
 	}
 }

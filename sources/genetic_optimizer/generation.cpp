@@ -14,11 +14,19 @@ namespace stsc
 			return fitness < gs.fitness;
 		}
 		//
+		generation::generation()
+		{
+			hash_storage_.reset( new hash_storage() );
+		}
+		generation::generation( const generation& g )
+		{
+			hash_storage_ = g.hash_storage_;
+		}
 		const bool generation::insert( const fitness_type& key, const gene_type& value )
 		{
-			if ( hash_storage_.insert( value->hash() ).second )
+			if ( hash_storage_->insert( value->hash() ).second )
 			{
-				iterator it = inner_map_.insert( value_type( key, value ) );
+				inner_map_.insert( value_type( key, value ) );
 				return true;
 			}
 			return false;
@@ -26,7 +34,8 @@ namespace stsc
 		void generation::swap( generation& g )
 		{
 			inner_map_.swap( g.inner_map_ );
-			hash_storage_.insert( g.hash_storage_.begin(), g.hash_storage_.end() );
+			if ( hash_storage_.get() != g.hash_storage_.get() && g.hash_storage_.get() )
+				hash_storage_->insert( g.hash_storage_->begin(), g.hash_storage_->end() );
 		}
 		generation::size_type generation::size() const
 		{

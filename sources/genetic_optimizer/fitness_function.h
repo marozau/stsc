@@ -10,7 +10,7 @@ namespace stsc
 		class fitness_function_prototype
 		{
 		public:
-			virtual void calculate( generation& ) const = 0;
+			virtual void calculate( const generation& ) const = 0;
 		};
 	}
 }

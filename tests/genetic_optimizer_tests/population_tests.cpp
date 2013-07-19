@@ -110,7 +110,7 @@ namespace stsc
 					bool is_stop = false;
 					do
 					{
-						is_stop = p->life_cycle();
+						BOOST_CHECK_NO_THROW( is_stop = p->life_cycle() );
 						++i;
 					} while ( !is_stop && i < max_cycles );
 					BOOST_CHECK_EQUAL( i < max_cycles, true );
