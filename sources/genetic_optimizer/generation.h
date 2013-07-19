@@ -124,15 +124,10 @@ namespace stsc
 					f( *it );
 		}
 		//
-		class generation_functor_const
-		{
-		public:
-			virtual void operator () ( const gene_storage& ) = 0;
-		};
 		class generation_functor
 		{
 		public:
-			virtual void operator () ( gene_storage& ) = 0;
+			virtual void operator () ( const gene_storage& ) = 0;
 		};
 	}
 }

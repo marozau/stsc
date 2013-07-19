@@ -16,7 +16,7 @@ namespace stsc
 		{
 			namespace details
 			{
-				class turnament_selection_helper : public stsc::genetic_optimizer::generation_functor_const
+				class turnament_selection_helper : public stsc::genetic_optimizer::generation_functor
 				{
 					typedef stsc::genetic_optimizer::selection_function_prototype selector;
 					std::vector<  stsc::genetic_optimizer::generation::value_type > genes;
@@ -51,7 +51,7 @@ namespace stsc
 						return mp;
 					}
 				};
-				class zero_test_helper : public stsc::genetic_optimizer::generation_functor_const
+				class zero_test_helper : public stsc::genetic_optimizer::generation_functor
 				{
 				public:
 					static const stsc::genetic_optimizer::gene_storage::fitness_type stop_flag;
@@ -75,7 +75,7 @@ namespace stsc
 					}
 				};
 				const stsc::genetic_optimizer::gene_storage::fitness_type zero_test_helper::stop_flag = -1;
-				class test_fitness_helper : public stsc::genetic_optimizer::generation_functor_const
+				class test_fitness_helper : public stsc::genetic_optimizer::generation_functor
 				{
 				public:
 					typedef std::vector< stsc::genetic_optimizer::gene_storage > storage;

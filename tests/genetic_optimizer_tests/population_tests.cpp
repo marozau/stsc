@@ -1,5 +1,7 @@
 #include "test_registrator.h"
 
+#include <iostream>
+
 #include <population.h>
 #include "functions.h"
 
@@ -11,6 +13,21 @@ namespace stsc
 	{
 		namespace genetic_optimizer
 		{
+			namespace details
+			{
+				class generation_out : public stsc::genetic_optimizer::generation_functor
+				{
+				public:
+					virtual void operator () ( const gene_storage& g )
+					{
+						std::cout << "equation: " 
+						<< g.gene->at( 0 ) << " "
+						<< g.gene->at( 1 ) << " "
+						<< g.gene->at( 2 ) << " "
+						<< " ; rating: " << g.fitness << std::endl;
+					}
+				};
+			}
 			class population_tests
 			{
 				typedef boost::shared_ptr< population > p_ptr;
@@ -114,12 +131,7 @@ namespace stsc
 						++i;
 					} while ( !is_stop && i < max_cycles );
 					BOOST_CHECK_EQUAL( i < max_cycles, true );
-	/*				for( generation::const_iterator it = p->get().begin(); it != p->get().end(); ++it )
-						std::cout << "equation: " 
-						<< it->gene->at( 0 ) << " "
-						<< it->gene->at( 1 ) << " "
-						<< it->gene->at( 2 ) << " "
-						<< " ; rating: " << it->fitness << std::endl;*/
+					p->generation_.for_each( details::generation_out(), p->generation_.size() );
 					std::cout << "Iterations: " << i << std::endl;					
 				}
 			};
