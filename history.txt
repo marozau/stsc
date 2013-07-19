@@ -5,6 +5,10 @@
 [-] : delete bug
 [+] : new feature
 
+ [00.00.00.08], (19-Jul-2013), Ihar Marozau
+---------------------------------------------------------------------------
+[+] first working version of genetic optimization is comleted
+
  [00.00.00.07], (25-May-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [+] write renewal_tests for population tests
