@@ -27,6 +27,42 @@ namespace stsc
 						<< " ; rating: " << g.fitness << std::endl;
 					}
 				};
+				class renewal_helper : stsc::genetic_optimizer::generation_functor
+				{
+					bool filled_;
+					std::vector< size_t > storage_;
+					size_t i_;
+					size_t diffs_;
+
+				public:
+					renewal_helper()
+						: filled_( false )
+						, i_( 0 )
+						, diffs_( 0 )
+
+					{
+					}
+					virtual void operator () ( const gene_storage& g )
+					{
+						if ( filled_ )
+						{
+							if ( storage_.at( i_ ) != g.gene->hash() )
+								++diffs_;
+						}
+						else
+						{
+							storage_.push_back( g.gene->hash() );
+						}
+					}
+					void set_filled()
+					{
+						filled_ = true;
+					}
+					const size_t get_diff() const
+					{
+						return diffs_;
+					}
+				};
 			}
 			class population_tests
 			{
@@ -93,15 +129,12 @@ namespace stsc
 
 					p_ptr p;
 					BOOST_CHECK_NO_THROW( p.reset( new population( gt_, tf, turnament_selection(), test_zero_stop(), test_population_settings_ ) ) );
-//					gene::allele_storage copy( p->generation_.begin()->gene->alleles_ );
-
+					details::renewal_helper helper;
+					p->generation_.for_each( helper, p->generation_.size() );
+					helper.set_filled();
 					BOOST_CHECK_NO_THROW( p->renewal() );
-					size_t diffs = 0;
-					bool res = true;
-	/*				for ( size_t i = 0; i < p->generation_.begin()->gene->alleles_.size(); ++i )
-						if ( p->generation_.begin()->gene->alleles_.at( i )->value() != copy.at( i )->value() )
-								res = false;
-					BOOST_CHECK_EQUAL( res, false );*/
+					p->generation_.for_each( helper, p->generation_.size() );
+					BOOST_CHECK_EQUAL( helper.get_diff() == p->generation_.size(), true );
 				}
 				static void life_cycle_tests()
 				{

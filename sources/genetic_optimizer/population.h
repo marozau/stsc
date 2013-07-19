@@ -57,7 +57,6 @@ namespace stsc
 			const bool life_cycle();
 			void renewal();
 
-
 		private:
 			void renewal_();
 			void reproduction_();

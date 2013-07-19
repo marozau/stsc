@@ -54,8 +54,6 @@ namespace stsc
 			template< class functor >
 			void for_each_gene( functor& f, const size_t count, const bool mandatory_change  = false );
 			template< class functor >
-			/*void for_each( functor& f, const size_t count );
-			template< class functor >*/
 			void for_each( functor& f, const size_t count ) const;
 			void swap( generation& g );
 			size_type size() const;
@@ -80,7 +78,7 @@ namespace stsc
 				} while ( is_repeat );
 				if ( it->fitness != gene_storage::no_fitness && is_changed )
 				{
-					temp_map.insert( value_type( 0, it->gene ) );
+					temp_map.insert( value_type( gene_storage::no_fitness, it->gene ) );
 					inner_map_.erase( it++ );
 				}
 				else
@@ -90,32 +88,6 @@ namespace stsc
 			}
 			inner_map_.insert( temp_map.begin(), temp_map.end() );
 		}
-	/*	template< class functor >
-		void generation::for_each( functor& f, const size_t count )
-		{
-			inner_map temp_map;
-			bool gene_changed = false;
-			bool fitness_changed = false;
-			size_t counter = 1;
-			for( iterator it = inner_map_.begin(); it != inner_map_.end() && counter <= count; ++counter )
-			{
-				fitness_type new_fitness = 0; 
-				const fitness_type old_fitness = it->fitness;
-				f( const_cast< gene_storage& >( *it ) );
-				gene_changed = hash_storage_.insert( it->gene->hash() ).second;
-				fitness_changed = old_fitness == it->fitness;
-				new_fitness = it->fitness;
-				if ( gene_changed || fitness_changed )
-				{
-					temp_map.insert( value_type( new_fitness, it->gene ) );
-					inner_map_.erase( it++ );
-				}
-				else 
-				{
-					++it;
-				}
-			}
-		}*/
 		template< class functor >
 		void generation::for_each( functor& f, const size_t count ) const
 		{
