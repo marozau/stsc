@@ -1,46 +1,64 @@
 #ifndef _STSC_ENGINE_ALGORITHMS_MOVING_MEDIAN_SERIES_H_
 #define _STSC_ENGINE_ALGORITHMS_MOVING_MEDIAN_SERIES_H_
 
-#include <strategies_engine.h>
-#include <bar_types.h>
-#include <algorithms\moving_median.h>
-#include <bar_data_adapter.h>
+#include <common/bar_types.h>
+#include <common/bar_data_adapter.h>
+
+#include <algorithms_storage/on_stock_algorithm.h>
+#include <series_storage/vector_serie.h>
+#include <series_storage/map_serie.h>
+
+#include <algorithms/moving_median.h>
 
 namespace stsc
 {
+	namespace tests_
+	{
+		namespace engine
+		{
+			namespace algorithms
+			{
+				class moving_median_series_test_helper;
+				class moving_median_indicator_tests;
+			}
+		}
+	}
 	namespace engine
 	{
-		template< stsc::common::bar_data_type::value T = stsc::common::bar_data_type::close >
-		class moving_median_series : public on_stock_algorithm_prototype< stsc::common::bar_data::float_type >
+		namespace algorithms
 		{
-		public:
-			typedef on_stock_algorithm_prototype< stsc::common::bar_data::float_type > base_class;
-			typedef moving_median< common::bar_data::float_type > moving_median_type;
-			typedef boost::shared_ptr< moving_median_type > moving_median_ptr;
+			typedef algorithms_storage::on_stock_algorithm_init< size_t > moving_median_series_init;
 
-		private:
-			moving_median_ptr mm_;
+			template< stsc::common::bar_data_type::value bar_data_element = stsc::common::bar_data_type::close >
+			class moving_median_series : public algorithms_storage::on_stock_algorithm< stsc::common::bar_data::float_type >
+			{
+				friend class stsc::tests_::engine::algorithms::moving_median_series_test_helper;
+				friend class stsc::tests_::engine::algorithms::moving_median_indicator_tests;
 
-		public:
-			explicit moving_median_series( const std::string& name,
-											strategies_engine& se,
-											const size_t moving_median_window )
-											
-				: base_class( name, se )
-			{
-				mm_.reset( new moving_median_type( moving_median_window ) );
-			}
-			~moving_median_series()
-			{
-			}
-			virtual void process( const bar_type& b )
-			{
-				using namespace stsc::common;
-				mm_->add_element( bar_data_adapter< T >::get( b ) );
-				if ( mm_->mature() )
-					registrate_signal( b, new bar_data::float_type( mm_->get_median() ) );
-			}
-		};
+				typedef typename algorithms_storage::on_stock_algorithm< stsc::common::bar_data::float_type > base_class;
+				typedef typename details::moving_median< stsc::common::bar_data::float_type > moving_median_type;
+
+				moving_median_type mm_;
+			public:
+				explicit moving_median_series( const moving_median_series_init& init )
+					: base_class( init, series_storage::create_vector_serie_ptr< signal_type >() )
+					, mm_( init.parameters )
+				{
+				}
+				virtual ~moving_median_series()
+				{
+				}
+			private:
+				virtual void process( const bar_type& b )
+				{
+					typedef stsc::common::bar_data_adapter< bar_data_element > data_adapter;
+
+					mm_.add_element( data_adapter::get( b.value ) );
+					if ( mm_.mature() )
+						register_signal( b, mm_.get_median() );
+				}
+			};
+		}
 	}
 }
 

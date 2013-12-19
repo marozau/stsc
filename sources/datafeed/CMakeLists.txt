@@ -19,6 +19,8 @@ find_package( system_utilities ${SEARCH_PARAMETERS} COMPONENTS
 	system_processor
 	property_reader
 	timer
+	multikey_tree
+	shared_name_storage
 )
 
 add_source_list( ${module_name} binary "binary/*.cpp" )

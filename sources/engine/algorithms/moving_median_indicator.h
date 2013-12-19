@@ -3,14 +3,12 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <bar_types.h>
-#include <signal_types.h>
+#include <common/bar_types.h>
+#include <common/signal_types.h>
 
-#include <algorithm_prototype.h>
-#include <strategies_engine.h>
+#include <algorithms_storage/on_stock_algorithm.h>
 
 #include <algorithms/moving_median.h>
-
 
 namespace stsc
 {
@@ -18,33 +16,49 @@ namespace stsc
 	{
 		namespace engine
 		{
-			class moving_median_indicator_tests;
+			namespace algorithms
+			{
+				class moving_median_indicator_tests;
+			}
 		}
 	}
 	namespace engine
 	{
-		class moving_median_indicator : public on_stock_algorithm_prototype< common::open_signal >
+		namespace algorithms
 		{
-			friend class stsc::tests_::engine::moving_median_indicator_tests;
+			struct moving_median_indicator_init_data
+			{
+				typedef common::bar_data::float_type float_type;
+				std::string moving_median_serie_id;
+				float_type bigger_than;
+				float_type less_than;
 
-		private:
-			typedef on_stock_algorithm_prototype< common::open_signal > base_type;
+				moving_median_indicator_init_data( const std::string& serie_id, const float_type bigger, const float_type less );
+			};
 
-			stsc::engine::signal_vector< common::bar_data::float_type > moving_median_series_;
+			class moving_median_indicator : public algorithms_storage::on_stock_algorithm< common::open_signal >
+			{
+				friend class stsc::tests_::engine::algorithms::moving_median_indicator_tests;
 
-			const common::bar_data::float_type bigger_than_;
-			const common::bar_data::float_type less_than_;
-			
-		public:
-			explicit moving_median_indicator( const std::string& name,
-											strategies_engine& se,
-											const std::string& moving_median_subscription,
-											const common::bar_data::float_type bigger_than,
-											const common::bar_data::float_type less_than );
-			~moving_median_indicator();
+			public:
+				typedef algorithms_storage::on_stock_algorithm_init< moving_median_indicator_init_data > init_type;
+			private:
+				typedef algorithms_storage::on_stock_algorithm< common::open_signal > base_type;
+				typedef common::bar_data::float_type float_type;
 
-			virtual void process( const bar_type& b );
-		};
+				typedef series_storage::const_serie_ptr< float_type > serie_type;
+				const serie_type moving_median_serie_;
+				
+				const float_type bigger_than_;
+				const float_type less_than_;
+				
+			public:
+				explicit moving_median_indicator( const init_type& init );
+				virtual ~moving_median_indicator();
+
+				virtual void process( const bar_type& b );
+			};
+		}
 	}
 }
 

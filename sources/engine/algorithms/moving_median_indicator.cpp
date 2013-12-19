@@ -1,39 +1,47 @@
-#include "moving_median_indicator.h"
+#include <algorithms/moving_median_indicator.h>
 
 #include <math.h>
-#include <strategies_engine.h>
+
+#include <series_storage/map_serie.h>
 
 namespace stsc
 {
 	namespace engine
 	{
-		moving_median_indicator::moving_median_indicator( const std::string& name,
-														strategies_engine& se, 
-														const std::string& moving_median_subscription_name,
-														const common::bar_data::float_type bigger_than,
-														const common::bar_data::float_type less_than )
-			: base_type( name, se )
-			, moving_median_series_( se.subscribe< common::bar_data::float_type >( moving_median_subscription_name ) )
-			, bigger_than_( bigger_than )
-			, less_than_( less_than )
-			
+		namespace algorithms
 		{
-			if ( bigger_than_ >= less_than_ )
-				throw std::invalid_argument( "moving_median_indicator: bigger_than value is bigger than less_than value" );
-		}
-		moving_median_indicator::~moving_median_indicator()
-		{
-		}
-		void moving_median_indicator::process( const bar_type& b )
-		{
-			const common::bar_data::float_type* price = moving_median_series_.at( &b );
-			if ( price )
+
+			moving_median_indicator_init_data::moving_median_indicator_init_data( const std::string& serie_id, const float_type bigger, const float_type less )
+				: moving_median_serie_id( serie_id )
+				, bigger_than( bigger )
+				, less_than( less )
 			{
-				const common::bar_data::float_type diff = b.close_ - *price;
-				if ( fabs( diff ) > bigger_than_  && fabs( diff ) < less_than_ )
+			}
+
+			moving_median_indicator::moving_median_indicator( const init_type& init )
+				: base_type( init, series_storage::create_map_serie_ptr< signal_type >() )
+				, moving_median_serie_( subscribe< float_type >( init.parameters.moving_median_serie_id ) )
+				, bigger_than_( init.parameters.bigger_than )
+				, less_than_( init.parameters.less_than )
+			{
+				if ( bigger_than_ >= less_than_ )
+					throw std::invalid_argument( "moving_median_indicator: bigger_than value is bigger than less_than value" );
+			}
+			moving_median_indicator::~moving_median_indicator()
+			{
+			}
+			void moving_median_indicator::process( const bar_type& b )
+			{
+				serie_type::signal_type_const_ptr mmse = moving_median_serie_->ptr_at( b.index );
+				if ( mmse )
 				{
-					const common::open_signal::side side = diff < 0 ? common::open_signal::side_long : common::open_signal::side_short;
-					registrate_signal( b, new common::open_signal( side ) );
+					const common::bar_data::float_type diff = b.value.close_ - *mmse;
+					if ( fabs( diff ) > bigger_than_  && fabs( diff ) < less_than_ )
+					{
+						using common::open_signal;
+						const open_signal::side side = ( diff < 0 ) ? open_signal::side_long : open_signal::side_short;
+						register_signal( b, new open_signal( side ) );
+					}
 				}
 			}
 		}

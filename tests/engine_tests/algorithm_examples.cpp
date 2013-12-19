@@ -1,6 +1,9 @@
 #include <algorithm_examples.h>
 
-#include <strategies_engine.h>
+#include <series_storage/map_serie.h>
+#include <series_storage/vector_serie.h>
+
+using namespace stsc::engine::algorithms_storage;
 
 namespace stsc
 {
@@ -8,55 +11,60 @@ namespace stsc
 	{
 		namespace engine
 		{
-			on_stock_algorithm_example::on_stock_algorithm_example( const std::string& name, stsc::engine::strategies_engine& es )
-				: on_stock_algorithm_prototype< double >( name, es )
+			namespace algorithms_storage
+			{
+				on_stock_test_algorithm::on_stock_test_algorithm( const on_stock_algorithm_init& init )
+					: typed_algorithm( init, typed_serie_ptr( new double_map_serie() ) )
+				{
+				}
+				on_stock_test_algorithm::~on_stock_test_algorithm()
+				{
+				}
+				void on_stock_test_algorithm::process( const bar_type& b )
+				{
+					if ( b.value.close_ == 0.56f )
+						register_signal( b, 45.0 );
+					if ( b.value.close_ == 5.27f )
+						register_signal( b, -89.5 );
+				}
+				//
+				on_bar_test_algorithm::on_bar_test_algorithm( const algorithm_init& init )
+					: typed_algorithm( init, typed_serie_ptr( new int_map_serie() ) )
+				{
+				}
+				on_bar_test_algorithm::~on_bar_test_algorithm()
+				{
+				}
+				void on_bar_test_algorithm::process( const bar_type& b )
+				{
+					if ( b.index == 3 )
+						register_signal( b, -43 );
+					if ( b.index == 18 )
+						register_signal( b, 98 );
+				}
+				//
+				on_period_test_algorithm::on_period_test_algorithm( const algorithm_init& init )
+					: typed_algorithm( init, typed_serie_ptr( new bool_vector_serie() ) )
+				{
+				}
+				on_period_test_algorithm::~on_period_test_algorithm()
+				{
+				}
+				void on_period_test_algorithm::process( const bar_type& b )
+				{
+					if ( b.index == 3 )
+						register_signal( b, true );
+					if ( b.index == 18 )
+						register_signal( b, true );
+				}
+			}
+			algorithm_manager_helper::algorithm_manager_helper()
+				: algorithm_manager( stock_names )
 			{
 			}
-			on_stock_algorithm_example::~on_stock_algorithm_example()
+			algorithm_manager_helper::~algorithm_manager_helper()
 			{
 			}
-			void on_stock_algorithm_example::process( const stsc::common::price_bar& b )
-			{
-			}
-			//
-			on_bar_algorithm_example::on_bar_algorithm_example( const std::string& name, stsc::engine::strategies_engine& es, const std::string& subscription_name )
-				: on_bar_algorithm_prototype< int >( name, es )
-				, double_serie_( es.subscribe< double >( subscription_name ) )
-			{
-			}
-			on_bar_algorithm_example::~on_bar_algorithm_example()
-			{
-			}
-			void on_bar_algorithm_example::process( const stsc::common::bar_type& b )
-			{
-			}
-			//
-			on_period_algorithm_example::on_period_algorithm_example( 
-				const std::string& name, 
-				stsc::engine::strategies_engine& es, 
-				const std::string& double_subscription_name,
-				const std::string& int_subscription_name )
-				 : on_period_algorithm_prototype< stsc::common::signal >( name, es )
-				 , double_serie_( es.subscribe< double >( double_subscription_name ) )
-				 , int_serie_( es.subscribe< int >( int_subscription_name ) )
-			{
-			}
-			on_period_algorithm_example::~on_period_algorithm_example()
-			{
-			}
-			void on_period_algorithm_example::process( const stsc::common::bar_type& b )
-			{
-			}
-			//
-			//void_out_algorithm::void_out_algorithm( const std::string& name, stsc::engine::strategies_engine& es, const std::string& doa_algo_name )
-			//	: algorithm_prototype< common::bar_type, void >( name, es )
-			//	, double_out_serie_( es.subscribe< double >( doa_algo_name ) )
-			//{
-			//}
-			//void_out_algorithm::~void_out_algorithm()
-			//{
-			//}
-			//
 		}
 	}
 }

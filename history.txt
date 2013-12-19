@@ -13,6 +13,44 @@
 ---------------------------------------------------------------------------
 [+] write renewal_tests for population tests
 
+ [00.00.00.14], (16-May-2013), Ivan Sidarau
+---------------------------------------------------------------------------
+[+] adding algorithm_manager
+[+] adding simulation configuration class
+
+ [00.00.00.13], (03-May-2013), Ivan Sidarau
+---------------------------------------------------------------------------
+[+] adding create_on_bar_algorithm, create_on_period_methods
+[+] rename datafeed_processor to stock_datafeed_processor
+[+] adding simulator class prototype
+
+ [00.00.00.13], (02-May-2013), Ivan Sidarau
+---------------------------------------------------------------------------
+[+] adding algorithm_manager
+[+] adding create methods for map, vector serie
+[+] adding make method for string_share
+[+] changing init type for on_stock_algorithm, now it template
+
+ [00.00.00.12], (17-Apr-2013), Ivan Sidarau
+---------------------------------------------------------------------------
+[+] fixing allmost all code to work with new memory model (map and vector based)
+
+ [00.00.00.10], (04-Apr-2013), Ivan Sidarau
+---------------------------------------------------------------------------
+[+] adding vector_serie and map_serie for each_bar signals algorithm and sparse signals algorithms
+[+] adding on_stock_bar, on_bar. on_period structures that will be sent to algorithms as bar data
+
+ [00.00.00.09], (03-Apr-2013), Ivan Sidarau
+---------------------------------------------------------------------------
+[+] adding eod_datafeed_splitter
+[+]fix bug into datafeed_creating by eod_datafeed_storage
+
+ [00.00.00.08], (27-Mar-2013), Ivan Sidarau
+---------------------------------------------------------------------------
+[+] adding eod_datafeed_storage source code files
+[+] adding read_data( ..., from, to ) read full file and than cut it to smallest version usng from-to interval to substract necessary bars
+
+
  [00.00.00.07], (12-Apr-2013), Ihar Marozau
 ---------------------------------------------------------------------------
 [+] add fitness_function and  stop_function to population class (try to realize DIP)
